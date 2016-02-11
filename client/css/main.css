@@ -57,7 +57,7 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 
-/* Typography*/		
+/* Typography*/
 
     @font-face {
         font-family: 'GraphicPixel';
@@ -126,9 +126,9 @@ footer, header, hgroup, menu, nav, section {
 /* Common rules */
     
     body.upscaled.game {background:#000;}
-    .game #logo {display:none;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;animation:none;}
+    .game r1{display:none;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;animation:none;}
         
-    #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, #tilt, .parchment-left, .parchment-middle, .parchment-right, .avatar, .facebook, .twitter, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background:url('../img/1/spritesheet.png');image-rendering:-moz-crisp-edges; image-rendering:-webkit-optimize-contrast;}
+    #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, #tilt, .parchment-left, .parchment-middle, .parchment-right, .avatar, .facebook, .twitter, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background:url('../img/1/spritesheet.png');image-rendering:-moz-crisp-edges; image-rendering:-webkit-optimize-contrast;} /*SRR*/
     
     #moztab {height:49px;width:118px;position:fixed;top:0;right:15%;background:url('../img/1/spritesheet.png') no-repeat -229px -204px;display:block;}
 
@@ -144,12 +144,19 @@ footer, header, hgroup, menu, nav, section {
     #mask {height:100%;width:100%;position:fixed;top:0;left:0;background:rgba(20,20,20,1);opacity:1;z-index:20;-moz-transition:0.5s opacity linear;-webkit-transition:0.5s opacity linear;-o-transition:0.5s opacity linear;-ms-transition:0.5s opacity linear;transition:0.5s opacity linear;pointer-events:none;}
 
     #bar-container {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:relative;width:100%;z-index:10;}
-    #healthbar {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;}
+    #healthbar, #worldbar {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;}
+    .hudval {color:white; font-family: "GraphicPixel";position:absolute}
 	#hitpoints {background:#d83939;-moz-transition:.5s width ease;-webkit-transition:.5s width ease;-o-transition:.5s width ease;-ms-transition:.5s width ease;transition:.5s width ease;}
+    
+    #worldpoints {background:#39D8C0;transition:.5s width ease;}
+
+    #worldpoints_neg {background:#991111; transition:.5s width ease;}
+
+
     #hitpoints.white {-moz-animation:flash 0.5s linear 1;-webkit-animation:flash 0.5s linear 1;-o-animation:flash 0.5s linear 1;-ms-animation:flash 0.5s linear 1;animation:flash 0.5s linear 1;}
 	#hitpoints.invincible {-moz-animation:invincible 0.3s steps(3, end) alternate infinite;-webkit-animation:invincible 0.3s steps(3, end) alternate infinite;-o-animation:invincible 0.3s steps(3, end) alternate infinite;-ms-animation:invincible 0.3s steps(3, end) alternate infinite;}
 	#hpguide {background: rgb(128,64,64); position: absolute; display: none; }
-    #notifications {position:absolute;left:50%;text-align:center;font-family:'GraphicPixel';overflow:hidden;}
+    #notifications {position:absolute;left:50%;text-align:center;font-family:'GraphicPixel';overflow:hidden; text-shadow: 1px 1px 0px black}
     #notifications div {position:absolute;-moz-transition:none;-webkit-transition:none;top:0;width:100%;}
     #notifications div.top {-moz-transition:0.5s top ease;-webkit-transition:0.5s top ease;-o-transition:0.5s top ease;-ms-transition:0.5s top ease;transition:0.5s top ease;}
     #notifications div.top #message1 {opacity:0;-moz-transition:0.2s opacity linear;-webkit-transition:0.2s opacity linear;-o-transition:0.2s opacity linear;-ms-transition:0.2s opacity linear;transition:0.2s opacity linear;}
@@ -241,7 +248,7 @@ footer, header, hgroup, menu, nav, section {
     #instructions {position:absolute;top:50%;left:50%;z-index:1000;font-family:'GraphicPixel';pointer-events:none;opacity:0;-moz-transition:0.25s opacity linear;-webkit-transition:0.4s top ease, 0.4s opacity linear;-o-transition:0.4s top ease, 0.4s opacity linear;-ms-transition:0.4s top ease, 0.4s opacity linear;transition:0.4s top ease, 0.4s opacity linear;}
     #instructions.active, #achievements.active {opacity:1;pointer-events:auto;}
     
-    #weapon, #armor {image-rendering:-moz-crisp-edges;}
+    #weapon, #armor, #item1, #item2 {image-rendering:-moz-crisp-edges;}
 
     #achievements, #achievements li, .coin, #achievement-notification, #coinsparks, .achievement-sharing a, #previous, #next {background:url('../img/1/achievements.png');image-rendering:-moz-crisp-edges;}
     #achievements {font-family:'GraphicPixel'; position:absolute;top:50%;left:50%;z-index:1000;opacity:0;pointer-events:none;-moz-transition:0.25s opacity linear;-webkit-transition:0.4s top ease, 0.4s opacity linear;-o-transition:0.4s top ease, 0.4s opacity linear;-ms-transition:0.4s top ease, 0.4s opacity linear;transition:0.4s top ease, 0.4s opacity linear;}
@@ -266,7 +273,7 @@ footer, header, hgroup, menu, nav, section {
     .play img {display:none;}
     .play.loading span:hover {color:inherit;cursor:default;}
     .play.loading img {display:inline;}
-    #create-new {margin-top:2em;}
+    
     #playername {color:#fff;}
 
     .validation-summary {margin:.5em;min-height:1em;}
@@ -510,14 +517,14 @@ footer, header, hgroup, menu, nav, section {
 	@media screen and (min-width: 1501px) {
 	    
 	    .upscaled #logo, .upscaled #logosparks, .upscaled .left-ornament, .upscaled .right-ornament, .upscaled #character, .upscaled #character div, .upscaled .button, .upscaled .button div, .upscaled #respawn, .upscaled #scroll, .upscaled #instructions, .upscaled .icon, .upscaled #tilt, .upscaled .parchment-left, .upscaled .parchment-middle, .upscaled .parchment-right, .upscaled .avatar, .upscaled .facebook, .upscaled .twitter, .upscaled .close, .upscaled .ribbon .top, .upscaled .ribbon .bottom, .upscaled #about .img, .upscaled .ext-link {background-image:url('../img/3/spritesheet.png');}
-	    .upscaled #bar-container, .upscaled #healthbar, .upscaled .barbutton, .upscaled #chatbox, .upscaled #population div{background-image:url('../img/3/barsheet.png');}
+	    .upscaled #bar-container, .upscaled #healthbar, .upscaled .barbutton, .upscaled #chatbox, .upscaled #population, .upscaled #worldbar {background-image:url('../img/3/barsheet.png');}
 	    .upscaled #achievements, .upscaled #achievements li, .upscaled .coin, .upscaled #achievement-notification, .upscaled #coinsparks, .upscaled .achievement-sharing a, .upscaled #previous, .upscaled #next {background:url('../img/3/achievements.png');}
 	    
 	    
         body {background:-moz-radial-gradient(rgba(0,0,0,0) 40%,rgba(0,0,0,1) 125%), url('../img/1/wood2.png') no-repeat 1587px 138px, url('../img/1/wood2.png') no-repeat 51px 519px, url('../img/1/wood3.png') no-repeat 228px 219px, url('../img/1/wood.png') repeat, #000; background-size:auto, 15px auto, 15px auto, 60px auto, 384px;}
         body {background:-webkit-gradient(radial, center center, 360, center center, 1200, from(rgba(0,0,0,0)), to(rgba(0,0,0,1))), url('../img/3/wood2.png') no-repeat 1587px 138px, url('../img/3/wood2.png') no-repeat 51px 519px, url('../img/3/wood3.png') no-repeat 228px 219px, url('../img/3/wood.png') repeat, #000; background-size:auto, 15px auto, 15px auto, 60px auto, 384px;}
         #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, .avatar, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background-size:1266px auto;}
-        #logo {height:126px;width:687px;position:absolute;top:10%;left:50%;margin-left:-344px;z-index:3;}
+        r1 {height:126px;width:687px;position:absolute;top:1%;left:50%;margin-left:-344px;z-index:3;}
         #logosparks {width:687px;height:126px;z-index:4;-moz-animation:logo3 .8s steps(6, end) infinite;-webkit-animation:logo3 .8s steps(6, end) infinite;-o-animation:logo3 .8s steps(6, end) infinite;-ms-animation:logo3 .8s steps(6, end) infinite;}
         #parchment, #loadcharacter, #confirmation, #error, #legal {width:1266px;height:546px;position:absolute;top:55%;left:50%;margin-left:-633px;margin-top:-273px;font-size:30px;text-align:center;z-index:2;}
         #parchment h1 {margin-top:60px;font-weight:normal;}
@@ -528,7 +535,7 @@ footer, header, hgroup, menu, nav, section {
         #character div {height:63px;width:36px;position:absolute;top:0;left:0;background-position:-1098px -36px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
         #parchment input {margin-top:30px; padding:0 15px; border:3px dashed #b2af9b; font-size:30px;border-radius:9px;height:61px;}
-        #parchment.createcharacter input {margin-top:20px;height:50px;}
+        #parchment.createcharacter input {margin-top:17px;height:45px;}
         #createcharacter .play {margin: 10px auto 10px auto;}
         .button {height:153px;width:375px;background-position:-687px -306px;margin:30px auto 0 auto;position:relative;}
         .play div {height:153px;width:375px;background-position:-687px 0px;}
@@ -590,8 +597,8 @@ footer, header, hgroup, menu, nav, section {
         /*Death & Respawn*/
         #death p {font-size:30px;margin-top:140px;}
         #death p em {margin-top:50px;}
-		#respawn {width:375px;height:153px;margin:60px auto 0 auto;background-position: 0 -1428px;}
-		#respawn:active {background-position:-375px -1428px;}
+		#respawn {margin:60px auto 0 auto;background-position: -779px -705px;}
+		#respawn:active {background-position:-779px -792px;}
 		
 		
 		/*Bubbles*/
@@ -604,12 +611,21 @@ footer, header, hgroup, menu, nav, section {
 
 		#healthbar {height:39px;background-position:0 -51px;width:306px;top:9px;background-size:1440px;z-index:20;}
 		#hitpoints {width:0px;height:33px;top:12px;left:33px;z-index:10;position:absolute;}
+        #worldbar {height:42px;background-position:-960px -51px;width:468px;top:6px;left:435px;background-size:1440px;z-index:20;}
+		#worldpoints{width:0px;height:31px;top:13px;left:687px;z-index:10;position:absolute;}
+		#worldpoints_neg {width:0px;height:31px;top:2px;right:20px;z-index:10;position:absolute;}
+        
+        #playerlevel {left: 46px; top: 10px;}
+        #hpnum {left: 137px; top: 10px;}
 		#hpguide {left: 33px; top: 12px; width: 2px; height: 33px; z-index: 30; }
 
-        #armor, #weapon {width:48px;height:48px;position:absolute;background-size:288px;background-position:-96px;}
+        #armor, #weapon, #item1, #item2 {width:48px;height:48px;position:absolute;background-size:288px;background-position:-96px;}
         #weapon {left:312px;top:3px;background-size:288px;}
         #armor {left:363px;top:3px;}
-
+        #item1 {left:312px;top:3px;background-size:288px;}
+        #item2 {left:363px;top:3px;}
+        
+        
         #notifications {width:588px;margin-left:-294px;font-size:20px;color:#eee;top:6px;height:45px;}
         #notifications div.top {top:-45px;}
         #notifications span {line-height:45px;height:45px;}
@@ -664,6 +680,18 @@ footer, header, hgroup, menu, nav, section {
         #sharing {width:240px;}
         
         /*About*/
+        #about {background:url('../img/3/minimap.png');
+                width:978px;
+                height:300px;
+                margin-left:-482px;
+                margin-top:-111px;
+                background-repeat: no-repeat;}
+        #mapmarkers {background:url('../img/3/marker-player.png'), url('../img/3/marker-quest.png'), url('../img/3/marker-top.png'), url('../img/3/marker-down.png');
+                        background-repeat: no-repeat;
+                        width:inherit;
+                        height:inherit;}
+        
+        #about {font-size:20px;}
         #about h1 span.title {max-width:400px;display:inline-block;line-height:39px;margin-top:-90px;position:relative;}
         #close-about {margin:230px auto 0 auto;text-align:center;clear:both;font-size:20px;color:#373737;}
         #about #game-desc {font-size:28px;text-align:center;max-width:70%;margin:30px auto;line-height:34px;}
@@ -688,13 +716,13 @@ footer, header, hgroup, menu, nav, section {
 	@media screen and (max-width: 1500px), screen and (max-height: 870px) {
 
 	    .upscaled #logo, .upscaled #logosparks, .upscaled .left-ornament, .upscaled .right-ornament, .upscaled #character, .upscaled #character div, .upscaled .button, .upscaled .button div, .upscaled #respawn, .upscaled #scroll, .upscaled #instructions, .upscaled .icon, .upscaled #tilt, .upscaled .parchment-left, .upscaled .parchment-middle, .upscaled .parchment-right, .upscaled .avatar, .upscaled .facebook, .upscaled .twitter, .upscaled .close, .upscaled .ribbon .top, .upscaled .ribbon .bottom, .upscaled #about .img, .upscaled .ext-link {background-image:url('../img/2/spritesheet.png');}
-	    .upscaled #bar-container, .upscaled #healthbar, .upscaled .barbutton, .upscaled #chatbox, .upscaled #population div{background-image:url('../img/2/barsheet.png');}
+	    .upscaled #bar-container, .upscaled #healthbar, .upscaled .barbutton, .upscaled #chatbox, .upscaled #population, .upscaled #worldbar{background-image:url('../img/2/barsheet.png');}
 	    .upscaled #achievements, .upscaled #achievements li, .upscaled .coin, .upscaled #achievement-notification, .upscaled #coinsparks, .upscaled .achievement-sharing a, .upscaled #previous, .upscaled #next {background:url('../img/2/achievements.png');}
 
         body {background:-moz-radial-gradient(rgba(0,0,0,0) 40%,rgba(0,0,0,1) 125%), url('../img/1/wood.png') repeat, #000; background-size:auto, 256px;}        
         body {background:-webkit-gradient(radial, center center, 240, center center, 800, from(rgba(0,0,0,0)), to(rgba(0,0,0,1))), url('../img/2/wood.png') repeat, #000; background-size:auto, 256px;}
         #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, .avatar, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background-size:844px auto;}
-        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;}
+        r1{height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;}
         #logosparks {width:458px;height:84px;z-index:4;-moz-animation:logo2 .8s steps(6, end) infinite;-webkit-animation:logo2 .8s steps(6, end) infinite;-o-animation:logo2 .8s steps(6, end) infinite;-ms-animation:logo2 .8s steps(6, end) infinite;}
         #parchment, #loadcharacter, #confirmation, #error, #legal {width:844px;height:364px;position:absolute;top:55%;left:50%;margin-left:-422px;margin-top:-182px;font-size:20px;text-align:center; z-index:2;}
         #parchment h1 {margin-top:40px;font-weight:normal;}
@@ -705,7 +733,7 @@ footer, header, hgroup, menu, nav, section {
         #character div {height:42px;width:24px;position:absolute;top:0;left:0;background-position:-732px -24px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
         #parchment input {margin-top:20px; padding:0 10px; border:2px dashed #b2af9b; font-size:20px;border-radius:6px;height:41px;}
-        #parchment.createcharacter input {margin-top:15px;height:30px;}
+        #parchment.createcharacter input {margin-top:9px;height:28px;}
         #createcharacter .play {margin: 8px auto 8px auto;}
         .button {height:102px;width:250px;background-position:-458px -204px;margin:20px auto 0 auto;position:relative;}
         .play div {height:102px;width:250px;background-position:-458px 0px;}
@@ -771,8 +799,8 @@ footer, header, hgroup, menu, nav, section {
         /*Death & Respawn*/
         #death p {font-size:20px;margin-top:90px;}
         #death p em {margin-top:30px;}
-		#respawn {width:250px;height:102px;margin:40px auto 0 auto;background-position: 0 -952px;}
-		#respawn:active {background-position:-250px -952px;}
+		#respawn {margin:40px auto 0 auto;background-position: -519px -471px;}
+		#respawn:active {background-position:-519px -528px;}
 		
 		/*Bubbles*/
 		#bubbles {width:960px;height:448px;margin-bottom:-448px;position:relative;top:-448px;pointer-events:none;}
@@ -783,12 +811,20 @@ footer, header, hgroup, menu, nav, section {
 		#bar-container {height:34px;top:-2px;background-size:960px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
-		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
+		#hitpoints {width:0px;height:19px;top:9px;left:22px;z-index:10;position:absolute;}
+        #worldbar {height:27px;background-position:-639px -35px; left: 292px; width:312px;top:7px;background-size:960px;z-index:20;}
+		#worldpoints {width:0px;height:20px;top:9px;left:459px;z-index:10;position:absolute;}
+		#worldpoints_neg {width:0px;height:20px;top:0px;right:22px;z-index:10;position:absolute;}
+        
+        #playerlevel {left: 32px; top: 5px;}
+        #hpnum {left: 83px; top: 5px;}
 		#hpguide {left: 22px; top: 8px; width: 2px; height: 22px; z-index: 30; }
 
-        #armor, #weapon {width:32px;height:32px;position:absolute;background-size:192px;background-position:-64px;}
+        #armor, #weapon, #item1, #item2 {width:32px;height:32px;position:absolute;background-position:-64px -64px;}
         #weapon {left:208px;top:2px;}
         #armor {left:242px;top:2px;}
+        #item1 {left:617px;top:3px;}
+        #item2 {left:651px;top:3px;}
 
         #notifications {width:392px;margin-left:-196px;font-size:16px;color:#eee;top:2px;height:30px;}
         #notifications div.top {top:-30px;}
@@ -820,7 +856,7 @@ footer, header, hgroup, menu, nav, section {
 		#chatbox input {font-size:14px;background:none;width:90%;border:0;margin-left:2%;padding:8px 0;}
 		
 		/*Credits*/
-        #credits, #death, #about {width:844px;height:364px;margin-left:-422px;margin-top:-182px;font-size:20px;}
+        #credits, #death {width:844px;height:364px;margin-left:-422px;margin-top:-182px;font-size:20px;}
         .parchment-left, .parchment-right, .parchment-middle {background-size:844px;}
         .parchment-left {width:76px;height:364px;background-position:0 -588px;}
         .parchment-right {width:76px;height:364px;background-position:-768px -588px;}
@@ -845,6 +881,17 @@ footer, header, hgroup, menu, nav, section {
         #sharing {width:202px;}
         
         /*About*/
+        #about {background:url('../img/2/minimap.png');
+                width:652px;
+                height:200px;
+                margin-left:-327px;
+                margin-top:-75px;
+                background-repeat: no-repeat;}
+        #mapmarkers {background:url('../img/3/marker-player.png'), url('../img/3/marker-quest.png'), url('../img/3/marker-top.png'), url('../img/3/marker-down.png');
+                        background-repeat: no-repeat;
+                        width:inherit;
+                        height:inherit;}
+        
         #about h1 span.title {max-width:400px;display:inline-block;line-height:24px;margin-top:-90px;position:relative;}
         #close-about {margin:153px auto 0 auto;text-align:center;clear:both;font-size:14px;color:#373737;}
         #about #game-desc {font-size:18px;text-align:center;max-width:70%;margin:25px auto;line-height:24px;}
@@ -891,7 +938,7 @@ footer, header, hgroup, menu, nav, section {
         body {background:-moz-radial-gradient(rgba(0,0,0,0) 40%,rgba(0,0,0,1) 125%), url('../img/1/wood.png') repeat, #000; background-size:auto, 128px;}
         body {background:-webkit-gradient(radial, center center, 200, center center, 600, from(rgba(0,0,0,0)), to(rgba(0,0,0,1))), url('../img/1/wood.png') repeat, #000; background-size:auto, 128px;}
         #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, .avatar, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background-size:422px auto;}
-        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;}
+        r1{height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;}
         #logosparks {width:229px;height:42px;z-index:4;-moz-animation:logo1 .8s steps(6, end) infinite;-webkit-animation:logo1 .8s steps(6, end) infinite;-o-animation:logo1 .8s steps(6, end) infinite;-ms-animation:logo1 .8s steps(6, end) infinite;}
         #parchment, #loadcharacter, #confirmation, #error, #legal {width:422px;height:182px;position:absolute;top:50%;left:50%;margin-left:-211px;margin-top:-91px;font-size:10px;text-align:center;z-index:2;}
         #parchment h1, #instructions h1 {margin-top:20px;font-weight:normal;}
@@ -902,7 +949,7 @@ footer, header, hgroup, menu, nav, section {
         #character div {height:21px;width:12px;position:absolute;top:0;left:0;background-position:-366px -12px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
         #parchment input {margin-top:10px; padding:0 5px; border:1px dashed #b2af9b; font-size:10px;border-radius:3px;height:21px;}
-        #parchment.createcharacter input {margin-top:4px;height:15px;}
+        #parchment.createcharacter input {margin-top:5px;height:17px;}
         .button {height:51px;width:125px;background-position:-229px -102px;margin:10px auto 0 auto;position:relative;}
         .play div {height:51px;width:125px;background-position:-229px 0px;}
         .play div:active {background-position:-229px -153px;}
@@ -955,8 +1002,8 @@ footer, header, hgroup, menu, nav, section {
         /*Death & Respawn*/
         #death p {font-size:10px;margin-top:45px;}
         #death p em {margin-top:0px;}
-		#respawn {width:125px;height:51px;margin:21px auto 0 auto;background-position: 0 -476px;}
-		#respawn:active {background-position:-125px -476px;}
+		#respawn {margin:21px auto 0 auto;background-position: -681px -235px;}
+		#respawn:active {background-position:-681px -264px;}
 		
 		/*Bubbles*/
 		#bubbles {width:480px;height:224px;margin-bottom:-224px;position:relative;top:-224px;pointer-events:none;}
@@ -968,10 +1015,19 @@ footer, header, hgroup, menu, nav, section {
 
 		#healthbar {height:13px;background-position:0 -17px;width:102px;top:3px;background-size:480px;z-index:20;}
 		#hitpoints {width:0px;height:11px;top:4px;left:11px;z-index:10;position:absolute;}
+        #worldbar {height:13px;background-position:-320px -18px;width:158px;top:4px;left:145px;background-size:480px;z-index:20;}
+		#worldpoints {width:0px;height:11px;top:4px;left:228px;z-index:10;position:absolute;}
+		#worldpoints_neg {width:0px;height:11px;top:0px;right:0px;z-index:10;position:absolute;}
+        
+        #playerlevel {left: 16px; top: 2px; font-size: 8px;}
+        #hpnum {left: 40px; top: 5px; visibility: hidden;}
 		#hpguide {left: 11px; top: 4px; width: 1px; height: 11px; z-index: 30; }
-        #armor, #weapon {width:16px;height:16px;position:absolute;background-size:96px;background-position:-32px;}
+        
+        #armor, #weapon, #item1, #item2 {width:16px;height:16px;position:absolute;background-size:96px;background-position:-32px;}
         #weapon {left:104px;top:1px;}
         #armor {left:121px;top:1px;}
+        #item1 {left:104px;top:1px;}
+        #item2 {left:121px;top:1px;}
 
         #notifications {width:196px;margin-left:-98px;font-size:10px;color:#eee;top:2px;height:15px;}
         #notifications div.top {top:-15px;}
@@ -1028,6 +1084,17 @@ footer, header, hgroup, menu, nav, section {
         #sharing {width:202px;}
         
         /*About*/
+        #about {background:url('../img/1/minimap.png');
+                width:326px;
+                height:100px;
+                margin-left:-168px;
+                margin-top:-33px;
+                background-repeat: no-repeat;}
+        #mapmarkers {background:url('../img/3/marker-player.png'), url('../img/3/marker-quest.png'), url('../img/3/marker-top.png'), url('../img/3/marker-down.png');
+                        background-repeat: no-repeat;
+                        width:inherit;
+                        height:inherit;}
+        
         #about h1 span.title {max-width:400px;display:inline-block;line-height:24px;margin-top:-30px;position:relative;margin-bottom:-10px;}
         #close-about {margin:77px auto 0 auto;text-align:center;clear:both;font-size:10px;color:#373737;}
         #about #game-desc {font-size:10px;text-align:center;max-width:70%;margin:10px auto;line-height:14px;}
@@ -1079,7 +1146,7 @@ footer, header, hgroup, menu, nav, section {
 		
 		#parchment, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon {background-size:422px auto;}
         #parchment {background:none;}
-        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
+        r1{height:84px;width:458px;position:absolute;top:7%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
         #parchment {width:100%;height:auto;position:absolute;left:0;top:125px;margin-left:0;margin-top:0;font-size:10px;text-align:center;z-index:2;color:#eee;}
         #parchment h1 {margin-top:0px;font-weight:normal;}
         #instructions h1 {margin-top:15px;font-size:14px;}
@@ -1090,7 +1157,7 @@ footer, header, hgroup, menu, nav, section {
         #character div {height:21px;width:12px;position:absolute;top:0;left:0;background-position:-366px -12px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
         #parchment input {margin-top:10px; padding-bottom:5px; border-bottom:1px dashed #b2af9b; font-size:14px;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;color:#eee;}
-        #parchment.createcharacter input {margin-top:4px;height:15px;}
+        #parchment.createcharacter input {margin-top:5px;height:18px;}
         .button {height:54px;width:204px;background-position:-500px -952px;margin:20px auto 0 auto;position:relative;background-size:844px;}
         .play, #create-new {font-size:16px;}
         .play div {height:54px;width:204px;background-position:-458px -512px; background-size:844px;}
@@ -1134,13 +1201,21 @@ footer, header, hgroup, menu, nav, section {
 		/*GUI Bar*/
 		#bar-container {height:34px;top:-2px;background-size:960px;background-position:0 -96px;}
 
-		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
-		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
+		#healthbar {height:26px;background-position:0 -130px;width:204px;top:6px;background-size:960px;z-index:20;}
+		#hitpoints {width:0px;height:20px;top:9px;left:22px;z-index:10;position:absolute;}
+        #worldbar {visibility: hidden; left:99px; height:27px;background-position:-99px -130px;width:99px;top:6px;background-size:960px;z-index:20;}
+		#worldpoints {width:0px;height:20px;top:9px;left:159px;z-index:10;position:absolute;}
+		#worldpoints_neg {width:0px;height:20px;top:0px;right:22px;z-index:10;position:absolute;}
+        
+        #playerlevel {left: 32px; top: 5px;}
+        #hpnum {left: 83px; top: 5px; visibility: hidden;}
 		#hpguide {left: 22px; top: 8px; width: 2px; height: 22px; z-index: 30; }
 
-        #armor, #weapon {width:32px;height:32px;position:absolute;background-size:192px;background-position:-64px;}
+        #armor, #weapon, #item1, #item2 {width:32px;height:32px;position:absolute;background-size:192px;background-position:-64px;}
         #weapon {left:208px;top:2px;}
         #armor {left:242px;top:2px;}
+        #item1 {left:208px;top:2px;}
+        #item2 {left:242px;top:2px;}
 
         #notifications {display:none;}
 
@@ -1181,8 +1256,8 @@ footer, header, hgroup, menu, nav, section {
         #instructions, #achievements, #lists, #about {-webkit-transition:none;-moz-transition:none;-o-transition:none;-ms-transition:none;transition:none;}
 
 		.game.death #death {height:172px;width:417px;margin-left:-208px;margin-top:-93px;color:#373737;background:url('../img/1/spritesheet.png') 0 -527px;margin:-10px 0 0 0;}
-        #respawn { background-position: -204px -1398px; background-size: 844px auto; width: 204px; height: 54px;}
-		#respawn:active {background-position:-408px -1398px;}
+        #respawn { background-position: -259px -235px; background-size: 422px auto;}
+		#respawn:active {background-position:-259px -264px;}
 
         #sharing, #credits-link, .dash {display:none;}
         #legal-link .dash {display:inline;}
@@ -1204,7 +1279,7 @@ footer, header, hgroup, menu, nav, section {
         #parchment {display:none;}
         #container, .game #container {display:none;}
         
-        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
+        r1 {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
         #portrait p {color:#eee;font-family:'GraphicPixel', sans-serif;font-size:20px;text-align:center;}
         
         #tilt {height:120px;width:132px;background-position:-710px -82px;background-size:844px;margin:25px auto 0 auto;}
@@ -1215,7 +1290,7 @@ footer, header, hgroup, menu, nav, section {
     @media screen and (max-width: 640px) and (orientation: portrait) {
         #portrait {display:block;height:300px;width:300px;position:absolute;top:70%; left:50%; margin:-150px 0 0 -150px;}
         
-        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
+        r1 {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
     }
 
 /* Tablet mode */
