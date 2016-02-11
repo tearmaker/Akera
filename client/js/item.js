@@ -11,7 +11,7 @@ define(['entity'], function(Entity) {
         },
 
         hasShadow: function() {
-            return true;
+            return false;
         },
 
         onLoot: function(player) {

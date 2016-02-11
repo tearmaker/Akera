@@ -17,6 +17,7 @@ function(Camera, Item, Character, Player, Timer) {
             this.tilesize = 16;
 
             this.upscaledRendering = this.context.mozImageSmoothingEnabled !== undefined;
+            //this.upscaledRendering = false;//this.context.mozImageSmoothingEnabled !== undefined; //SRR
             this.supportsSilhouettes = this.upscaledRendering;
 
             this.rescale(this.getScaleFactor());
@@ -26,7 +27,7 @@ function(Camera, Item, Character, Player, Timer) {
             this.maxFPS = this.FPS;
             this.realFPS = 0;
             //Turn on or off Debuginfo (FPS Counter)
-            this.isDebugInfoVisible = false;
+            this.isDebugInfoVisible = true;
 
             this.animatedTileCount = 0;
             this.highTileCount = 0;
@@ -338,13 +339,17 @@ function(Camera, Item, Character, Player, Timer) {
             ctx.clearRect(x, y, h, w);
         },
 
-        drawEntity: function(entity) {
-            var sprite = entity.sprite,
+        drawEntity: function(entity) {  //dessin des autres
+            var sprite = entity.sprite,     //de l'entity vue
                 shadow = this.game.shadows["small"],
+                pface = this.game.sprites[entity.pface],
+                //pface = this.game.sprites[this.game.player.getPface()], //SRR
                 anim = entity.currentAnimation,
                 os = this.upscaledRendering ? 1 : this.scale,
                 ds = this.upscaledRendering ? this.scale : 1;
 
+
+            
             if(anim && sprite) {
                 var frame = anim.currentFrame,
                     s = this.scale,
@@ -382,14 +387,19 @@ function(Camera, Item, Character, Player, Timer) {
                 }
 
                 if(entity.isVisible()) {
+                   
+                    if(entity instanceof Character && !entity.isDead && entity.hasWeapon()) {
+                        this.context.drawImage(pface.image, x, y, w, h, ox, oy, dw, dh); //SRR 111 du perso
+                    }
+                        
+                    this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
+                    
                     if(entity.hasShadow()) {
-                        this.context.drawImage(shadow.image, 0, 0, shadow.width * os, shadow.height * os,
+                        this.context.drawImage(shadow.image, 0, 10, shadow.width * os, shadow.height * os,
                                                0,
                                                entity.shadowOffsetY * ds,
                                                shadow.width * os * ds, shadow.height * os * ds);
                     }
-
-                    this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
 
                     if(entity instanceof Item && entity.kind !== Types.Entities.CAKE) {
                         var sparks = this.game.sprites["sparks"],
@@ -409,7 +419,9 @@ function(Camera, Item, Character, Player, Timer) {
 
                 if(entity instanceof Character && !entity.isDead && entity.hasWeapon()) {
                     var weapon = this.game.sprites[entity.getWeaponName()];
-
+                    
+                   
+                    
                     if(weapon) {
                         var weaponAnimData = weapon.animationData[anim.name],
                             index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length,
@@ -423,6 +435,9 @@ function(Camera, Item, Character, Player, Timer) {
                                                weapon.offsetY * s,
                                                ww * ds, wh * ds);
                     }
+                    
+                    
+                    
                 }
 
                 this.context.restore();
@@ -698,19 +713,23 @@ function(Camera, Item, Character, Player, Timer) {
                 offsetX = (weapon.offsetX - sprite.offsetX) * os,
                 offsetY = (weapon.offsetY - sprite.offsetY) * os,
                 // shadow
-                shadow = this.game.shadows["small"],
+                /*shadow = this.game.shadows["small"],
                 sw = shadow.width * os,
                 sh = shadow.height * os,
                 ox = -sprite.offsetX * os,
-                oy = -sprite.offsetY * os;
-
+                oy = -sprite.offsetY * os,*/
+                // pface
+                pface = this.game.sprites[this.game.player.getPface()]; //SRR
+            
             canvas.width = w;
             canvas.height = h;
 
             ctx.clearRect(0, 0, w, h);
-            ctx.drawImage(shadow.image, 0, 0, sw, sh, ox, oy, sw, sh);
+            //ctx.drawImage(shadow.image, 0, 0, sw, sh, ox, oy, sw, sh);
+            //ctx.drawImage(pface.image, 0, wy, ww, wh, offsetX, offsetY, ww, wh); //SRR 111
             ctx.drawImage(sprite.image, 0, y, w, h, 0, 0, w, h);
             ctx.drawImage(weapon.image, 0, wy, ww, wh, offsetX, offsetY, ww, wh);
+            
 
             return canvas.toDataURL("image/png");
         },

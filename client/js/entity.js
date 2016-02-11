@@ -14,7 +14,7 @@ define(function() {
             this.flipSpriteY = false;
             this.animations = null;
             this.currentAnimation = null;
-            this.shadowOffsetY = 0;
+            this.shadowOffsetY = -48;
 
             // Position
             this.setGridPosition(0, 0);
@@ -88,16 +88,27 @@ define(function() {
             return animation;
         },
 
-        setAnimation: function(name, speed, count, onEndCount) {
+        setAnimation: function(name, speed, count, onEndCount, reroll) {
             var self = this;
-
+            
             if(this.isLoaded) {
                 if(this.currentAnimation && this.currentAnimation.name === name) {
                     return;
                 }
 
-                var s = this.sprite,
-                    a = this.getAnimationByName(name);
+                var s = this.sprite;
+                reroll = typeof reroll !== 'undefined' ? reroll : 1;
+                
+                
+                if(s.name && reroll==1) {
+                    if(s.name.substr(0, 4) == 'gite'){
+                        name = this.getRandomGite(s.name);
+                    } else if (s.name.substr(0, 8) == 'villager') {
+                        name = this.getRandomVillager(s.name);
+                    }
+                }
+                
+                var a = this.getAnimationByName(name);
 
                 if(a) {
                     this.currentAnimation = a;
@@ -252,7 +263,44 @@ define(function() {
 
         onDirty: function(dirty_callback) {
             this.dirty_callback = dirty_callback;
+        },
+
+        getRandomGite: function(sname) {
+            var ani, rnd, nbgite;
+            if(sname == 'gite01'){
+                    nbgite = 8;
+                } else if(sname == 'gite02'){
+                    nbgite = 4;
+                } else if(sname == 'gite03'){
+                    nbgite = 7;
+                } else if(sname == 'gite04'){
+                    nbgite = 2;
+                } else if(sname == 'gite05'){
+                    nbgite = 3;
+                } else if(sname == 'gite06'){
+                    nbgite = 4;
+                } else if(sname == 'gite07'){
+                    nbgite = 4;
+                } else if(sname == 'gite08'){
+                    nbgite = 5;
+                } else if(sname == 'gite09'){
+                    nbgite = 1;
+                } else if(sname == 'gite10'){
+                    nbgite = 1;
+                }
+            
+            rnd = Math.floor(Math.random() * nbgite) +1;
+            ani = "idle_down" + rnd;
+            return ani;
+        },
+        
+        getRandomVillager: function(sname) {
+            var ani, rnd;
+            rnd = Math.floor(Math.random() * 3) +1;
+            ani = "idle_down" + rnd;
+            return ani;
         }
+        
     });
 
     return Entity;

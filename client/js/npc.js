@@ -1,184 +1,488 @@
 define(['character'], function(Character) {
 
-    var NpcTalk = {
-        "guard": [
-            "Hello there",
-            "We don't need to see your identification",
-            "You are not the player we're looking for",
-            "Move along, move along..."
-        ],
-
-        "king": [
-            "Hi, I'm the King",
-            "I run this place",
-            "Like a boss",
-            "I talk to people",
-            "Like a boss",
-            "I wear a crown",
-            "Like a boss",
-            "I do nothing all day",
-            "Like a boss",
-            "Now leave me alone",
-            "Like a boss"
-        ],
-
-        "villagegirl": [
-            "Hi there, adventurer!",
-            "How do you like this game?",
-            "It's all happening in a single web page! Isn't it crazy?",
-            "It's all made possible thanks to WebSockets.",
-            "I don't know much about it, after all I'm just a program.",
-            'Why don&#x27;t you read this <a target="_blank" href="http://hacks.mozilla.org/2012/03/browserquest/">blog post</a> and learn all about it?'
-        ],
-
-        "villager": [
-            "Howdy stranger. Do you like poetry?",
-            "Roses are red, violets are blue...",
-            "I like hunting rats, and so do you...",
-            "The rats are dead, now what to do?",
-            "To be honest, I have no clue.",
-            "Maybe the forest, could interest you...",
-            "or instead, cook a rat stew."
-        ],
-
-        "agent": [
-            "Do not try to bend the sword",
-            "That's impossible",
-            "Instead, only try to realize the truth...",
-            "There is no sword."
-        ],
-
-        "rick": [
-            "We're no strangers to love",
-            "You know the rules and so do I",
-            "A full commitment's what I'm thinking of",
-            "You wouldn't get this from any other guy",
-            "I just wanna tell you how I'm feeling",
-            "Gotta make you understand",
-            "Never gonna give you up",
-            "Never gonna let you down",
-            "Never gonna run around and desert you",
-            "Never gonna make you cry",
-            "Never gonna say goodbye",
-            "Never gonna tell a lie and hurt you"
-        ],
-
-        "scientist": [{
-			"text": [//default
-				"Greetings.",
-				"I am the inventor of these two potions.",
-				"The red one will replenish your health points...",
-				"The orange one will turn you into a firefox and make you invincible...",
-				"But it only lasts for a short while.",
-				"So make good use of it!",
-				"Now if you'll excuse me, I need to get back to my experiments..."
+    var NpcTalk = { //=== Les conditions plus récentes en haut
+        
+        
+        //================================================= garde
+        
+         "guard": [{    
+           "text": [
+                ["t","Allez voir le caporal Delaporte il vous donnera toutes les explications dont vous avez besoin."]
+            ]},
+            
+            {"condition": function(game){return  game.storage.getQuestRank() == 15;},
+            "text": [
+                ["t","L'épidémie est calmée. Mais il faut TOUJOURS rester vigilent !"]
 			]},
-			{"condition": function(game){return (game.player.invincible);},
-			 "text": [
-				"Did you not listen to what I said?!!",
-				"the famous fire-potion only lasts a few seconds",
-				"You shouldn't be wasting them talking to me…"
+                   
+            {"condition": function(game){return  game.storage.getQuestRank() > 10;},
+            "text": [
+                ["t","Les malades diminuent à vu d'oeil, Bravo pour votre implication !"]
 			]},
-			{"condition": function(game){return ((game.player.getSpriteName() == "firefox")
-											&& !(game.player.invincible));},
-			 "text": [
-				"Ha ha ha, *name*",
-				"All that glitters is not gold…",
-				"-sigh-",
-				"Did you really think you could abuse me with your disguise?",
-				"I conceived that f…, that potion.",
-				"Better not use your outfit as a deterrent,",
-				"The goons you'll meet will attack you whatever you look like."
+                   
+            {"condition": function(game){return  game.storage.getQuestRank() > 6;},
+            "text": [
+                ["t","Ca va vraiment mieux depuis que vous nous aidé, continuez."]
+			]},
+                   
+            {"condition": function(game){return  game.storage.getQuestRank() > 2;},
+            "text": [
+                ["t","Pas facile de protéger la population de tous ces moustiques..."]
+			]},
+            
+        ],
+        
+        //================================================= Cpt Briska
+        
+        "quester01": [{ 
+        "text": [
+                ["t","Salut l'ami, merci pour le coup de main de la dernière fois."]
+            ]},
+                      
+        {"condition": function(game){return (game.storage.getQuestRank() == 3);},
+            "text": [
+                ["t","Transmettez ces documents au docteur, je vous prie. Il se trouve dans la ville sud et est toujours vêtu de blanc."]
+			]},
+                      
+        {"condition": function(game){return (game.storage.getQuestRank() <= 3 && game.storage.getCrabCount() >= 2);},
+            "text": [
+                ["t","Bon travail ! Je savais qu’on pouvait avoir confiance en vous."],
+                ["t","Pouvez-vous transmettre ces documents au docteur ? Il se trouve dans la ville sud. Il est toujours vêtu de blanc."]
+			]},
+        {"condition": function(game){return game.storage.getQuestRank() == 2 ;},
+        "text": [
+            ["t","Prenez une arme à côté de moi. Détruisez deux monstres et revenez me voir quand ça sera fait."]
+            ]},              
+                      
+        {"condition": function(game){return game.storage.getQuestRank() == 1 ;},
+        "text": [
+            ["t","Recrue présentez-vous !"],
+            ["a","1- Je suis *name*","2- Je n'ai pas envie de donner mon nom."],
+            ["t","Vous tombez bien *name*. L’entrée de la ville est infestée par des ombres hostiles et notre effectif est au plus bas…","*Elle vous toise* Peu importe... Je vous apprendrai la discipline plus tard. L’entrée de la ville est infestée par des monstres et notre effectif est au plus bas…"],
+            ["a","1- Comptez sur moi pour m'en occuper !","2- Dites m’en plus, s'il vous plait."],
+            ["t","J’en attendais pas moins de vous ! Vous êtes fait pour l’action.","On ne sait pas grand-chose mais nos troupes sont touchées par une étrange maladie..."],
+            ["t","Prenez une arme à côté de moi. Détruisez deux monstres et revenez me voir quand ça sera fait."]
+            ]}
+        ],
+        
+         //================================================= medecin
+        
+        "quester02": [{
+           "text": [
+                ["t","Salut, je suis un peu occupé pour le moment"]
+            ]},
+                   
+           {"condition": function(game){return game.storage.getQuestRank() == 5 ;},
+            "text": [
+                ["t","Allez voir l'ermite entomo à l'est.","J’ai entendu parler d’un scientifique qui aurait une théorie sur cette maladie"]
+			]},
+        
+        {"condition": function(game){return (game.storage.getQuestRank() == 4 && game.storage.hasDoneMiniQuest('parle_malade1'));},
+            "text": [
+                ["t","Quels sont les symptômes que vous avez relevés ?"],
+                ["a","Cheveux deviennent rouges","Courbatures et fièvres"],
+                ["t","Ca ne colle pas du tout...","Je vois… j’ai entendu parler d’un scientifique qui aurait une théorie sur cette maladie."]
+			]},
+        
+        {"condition": function(game){return game.storage.getQuestRank() == 4;},
+            "text": [
+                ["t","Allez interroger des patients."]
+			]},
+                      
+        {"condition": function(game){return game.storage.getQuestRank() == 3;},
+            "text": [
+                ["t","Voici les observations de l’avant poste. Avec toutes ces données on devrait en savoir plus très bientôt. Merci de votre aide…"],
+                ["a","Est-ce que je peux faire autre chose ?","Bon et ben… à plus."],
+                ["t","Je n’osais pas demander…","Attendez…"],
+                ["t","Nous avons besoin d’informations supplémentaires. Une étrange maladie se répand dans la ville, nous sommes débordés. Pouvez-vous enquêter auprès des malades, nous devons savoir de quoi ils souffrent."]
 			]}
-			
-		],
+        ],
+        
+        
+        //=================================================  entomologiste 
+        
+        "quester03": [{   
+           "text": [
+                ["t","*Elle semble passionnée par un insecte et vous ignore complètement*"]
+            ]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 14;},
+            "text": [
+                ["t","Allez voir le doc du nord, à la centrale."]
+			]},
+            
+            {"condition": function(game){return (game.storage.getQuestRank() == 13 && game.storage.getGiteCount() >= 5);},
+            "text": [
+                ["t","Bien joué ! Sans gite, pas de reproduction. Faites votre dernier rapport au scientifique sur ce que vous avez appris."]
+			]},
+                        
+            {"condition": function(game){return game.storage.getQuestRank() == 13;},
+            "text": [
+                ["t","RE. Il faut que tu détruise un gite."]
+			]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","RE. Il faut s’attaquer au problème à la base. Pour se reproduire, les moustiques ont besoin d’eau. C’est là que nous devons agir."]
+			]},
+                        
+            {"condition": function(game){return game.storage.getQuestRank() == 7;},
+            "text": [
+                ["t","Allez voir le Professeur Makebaya dans la ville nord."]
+			]},
+                        
+            {"condition": function(game){return (game.storage.getQuestRank() == 6 && game.storage.getRatCount() >= 5);},
+            "text": [
+                ["t","Je vais transférer mes analyses au laboratoire Central. Nous devons en apprendre plus sur ces spécimens."]
+			]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 6;},
+            "text": [
+                ["t","Capturez-en 2."]
+			]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 5;},
+            "text": [
+                ["t","Bonjour ! Certains virus sont transmis par des insectes. C’est certainement ce qui se passe ici. Il faut en avoir le cœur net. Capturez-en 5."]
+			]}
 
-        "nyan": [
-            "nyan nyan nyan nyan nyan",
-            "nyan nyan nyan nyan nyan nyan nyan",
-            "nyan nyan nyan nyan nyan nyan",
-            "nyan nyan nyan nyan nyan nyan nyan nyan"
+        ],  
+        
+         //=================================================  scientifique
+        
+        "quester04": [{  
+           "text": [
+                ["t","Je suis en plein évaluation du document d'un de mes pairs. Veuillez repasser plus tard."]
+            ]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 14;},
+            "text": [
+                ["t","GG... Euh... Félicitations ! Cette fois nous y sommes. Nous savons ce que nous devons faire pour stopper cette épidémie : éliminez les gites, se protéger, et réduire la population de moustiques adultes."]
+			]},
+                      
+            {"condition": function(game){return game.storage.getQuestRank() == 13 ;},
+            "text": [
+                ["t","Retournez voir l'entomo, elle a du neuf."]
+			]},
+            
+            {"condition": function(game){return (game.storage.getQuestRank() == 12 && game.storage.hasDoneMiniQuest('informed'));},
+            "text": [
+                ["t","Merci d'avoir rétabli la vérité. L'entomo a du neuf."]
+			]},
+
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Discutez avec les gens. Ils doivent savoir."]
+			]},
+                      
+            {"condition": function(game){return (game.storage.getQuestRank() == 11 && game.storage.hasDoneMiniQuest('protected'));},
+            "text": [
+                ["t","Merci de les avoir protégés. Des rumeurs se propagent, rétablissez la vérité."]
+			]},
+                      
+            {"condition": function(game){return game.storage.getQuestRank() == 11;},
+            "text": [
+                ["t","Bien. Je vois que vous avez le répulsif. Protégez les malades."]
+			]},
+
+            {"condition": function(game){return game.storage.getQuestRank() == 9;},
+            "text": [
+                ["t","Va voir la vieille herboriste."]
+			]},
+                      
+            {"condition": function(game){return (game.storage.getQuestRank() == 8 && game.storage.getRatCount() >= 5);},
+            "text": [
+                ["t","I salé... Euh... Bien joué. J'ai une vieille connaissance, une herboriste qui pourrait nous aider. Allez lui demander de l'aide."]
+			]},
+                
+            {"condition": function(game){return game.storage.getQuestRank() == 8;},
+            "text": [
+                ["t","Détruisez 5 moustiques et ça ira mieux."]
+			]},
+            
+            {"condition": function(game){return game.storage.getQuestRank() == 7;},
+            "text": [
+                ["t","Salut ! Bonnes analyses. Il faut réduire la population de moustiques adultes."]
+			]}
+        ],  
+        
+        //================================ Man l'oubliée la docktè fèy
+        
+        "quester05": [{
+            "text": [
+                ["t","Attends doudou, je suis en train de mixer des plantes là."]
+            ]},
+                      
+            {"condition": function(game){return game.storage.getQuestRank() == 11;},
+            "text": [
+                ["t","Le doc te dira quoi faire."]
+			]},
+                      
+            {"condition": function(game){return (game.storage.getQuestRank() == 10 && game.storage.hasDoneMiniQuest('plante_prise'));},
+            "text": [
+                ["t","Parfait, il me faut un peu de temps pour réaliser le répulsif."],
+                ["t","..."],
+                ["t","... ..."],
+                ["t","Voilà, c'est fait ! Apporte le au Dr, il te dira quoi en faire."]
+			]},
+                      
+            {"condition": function(game){return game.storage.getQuestRank() == 10;},
+            "text": [
+                ["t","N'oublie pas mes plantes, doudou."]
+			]},
+                                                 
+            {"condition": function(game){return game.storage.getQuestRank() == 9;},
+            "text": [
+                ["t","Bonjour ! Oui, je peux aider. Peux-tu me prendre une plante s'il te plait ?"]
+			]}
+
+        ],
+        
+        //================================================= malade 01
+        
+        "malade01": [{   
+             "text": [
+                ["t","Aaaargh"]
+            ]},
+                    
+            {"condition": function(game){return game.storage.getQuestRank() == 11;},
+            "text": [
+                ["t","Woy woy woy"],
+                ["a","*Mettre une moustiquaire*"],
+                ["t","Merci"]
+            ]},
+            
+           {"condition": function(game){return game.storage.getQuestRank() == 4;},
+            "text": [
+                ["t","Woy woy woy"],
+                ["a","Comment-allez vous ?"],
+                ["t","J'ai des courbatures et de la fièvre"]
+            ]}
+        ],
+        
+        
+        //================================================= Piege a moustique
+        
+        "trap1": [{   
+             "text": [
+                ["t","Aaaargh"]
+            ]},
+                    
+            {"condition": function(game){return game.storage.getQuestRank() == 11;},
+            "text": [
+                ["t","Woy woy woy"],
+                ["a","*Mettre une moustiquaire*"],
+                ["t","Merci"]
+            ]},
+            
+           {"condition": function(game){return game.storage.getQuestRank() == 4;},
+            "text": [
+                ["t","Woy woy woy"],
+                ["a","Comment-allez vous ?"],
+                ["t","J'ai des courbatures et de la fièvre"]
+            ]}
+        ],
+        
+        //================================================= plante
+        
+        "rick": [{      
+            "text": [
+                ["t","*Ohh une belle plante*"]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() >= 0;}, //remettre à 8
+            "text": [
+                ["a","*Prendre les feuilles*"]
+            ]}
+        ],      
+        
+        //==================================== VILLAGER
+        
+        "villager01": [{
+            "text": [
+                ["t","J'ai un peu peur d'attrapper la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager02": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager03": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager04": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager05": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager06": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager07": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager08": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager09": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
+        ],
+        "villager10": [{
+            "text": [
+                ["t","J'ai un peu peur de contracter la maladie."]
+            ]},
+            {"condition": function(game){return game.storage.getQuestRank() == 12;},
+            "text": [
+                ["t","Attention, c'est une agence américaine qui donne la maladie."],
+                ["a","Les études ont montré que, etc...","Arrête de dire des bêtises"],
+                ["t","D'accord, je fais confiance à Makebaya et aux autres.","Mouais... Pas convaincu"]
+            ]}
         ],
 
-        "beachnpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
+        //============ GITES
+        
+        "gite01": [{    //petites Fleurs
+           "text": [
+                ["a","Retirer l'eau"]
+            ]}
         ],
-
-        "forestnpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
+        "gite02": [{ //Fleurs
+           "text": [
+                ["a","Retirer l'eau","Mettre du sable à ras bord"]
+            ]}
         ],
-
-        "desertnpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
+        "gite03": [{ //Dechets //Exception
+           "text": [
+                ["a","Détruire"]
+            ]}
         ],
-
-        "lavanpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
+        "gite04": [{ //Fut
+           "text": [
+                ["a","Couvrir","Recouvrir avec une moustiquaire"]
+            ]}
         ],
-
-        "priest": [
-            "Oh, hello, young man.",
-            "Wisdom is everything, so I'll share a few guidelines with you.",
-            "You are free to go wherever you like in this world",
-            "but beware of the many foes that await you.",
-            "You can find many weapons and armors by killing enemies.",
-            "The tougher the enemy, the higher the potential rewards.",
-            "You can also unlock achievements by exploring and hunting.",
-            "Click on the small cup icon to see a list of all the achievements.",
-            "Please stay a while and enjoy the many surprises of BrowserQuest",
-            "Farewell, young friend."
+        "gite05": [{ //Egouttoir
+           "text": [
+                ["a","Retirer l'eau"]
+            ]}
         ],
-
-        "sorcerer": [
-            "Ah... I had foreseen you would come to see me.",
-            "Well? How do you like my new staff?",
-            "Pretty cool, eh?",
-            "Where did I get it, you ask?",
-            "I understand. It's easy to get envious.",
-            "I actually crafted it myself, using my mad wizard skills.",
-            "But let me tell you one thing...",
-            "There are lots of items in this game.",
-            "Some more powerful than others.",
-            "In order to find them, exploration is key.",
-            "Good luck."
+        "gite06": [{ //Brosses
+           "text": [
+                ["a","Retirer l'eau"]
+            ]}
         ],
-
-        "octocat": [
-            "Welcome to BrowserQuest!",
-            "Want to see the source code?",
-            'Check out <a target="_blank" href="http://github.com/browserquest/BrowserQuest">the repository on GitHub</a>'
+        "gite07": [{ //Fleurs
+           "text": [
+                ["a","Changer l'eau"]
+            ]}
         ],
-
-        "coder": [
-            "Hi! Do you know that you can also play BrowserQuest on your tablet or mobile?",
-            "That's the beauty of HTML5!",
-            "Give it a try..."
+        "gite08": [{ //fleurs Tombes
+           "text": [
+                ["a","Mettre du sable à ras bord"]
+            ]}
         ],
-
-        "beachnpc": [
-            "Don't mind me, I'm just here on vacation.",
-            "I have to say...",
-            "These giant crabs are somewhat annoying.",
-            "Could you please get rid of them for me?"
+        "gite09": [{ //Gouttiere
+           "text": [
+                ["a","Nettoyer"]
+            ]}
         ],
-
-        "desertnpc": [
-            "One does not simply walk into these mountains...",
-            "An ancient undead lord is said to dwell here.",
-            "Nobody knows exactly what he looks like...",
-            "...for none has lived to tell the tale.",
-            "It's not too late to turn around and go home, kid."
+        "gite10": [{
+           "text": [
+                ["a","Vider"]
+            ]}
         ],
-
-        "othernpc": [
-            "lorem ipsum",
-            "lorem ipsum"
+        
+        //======================== LORE 
+        
+        "lore01": [{ //Source
+           "text": [
+                ["t","Une source d'énergie"]
+            ]}
+        ],
+            
+        "lore02": [{ //Panneau
+           "text": [
+                ["a","Un panneau... Voilà..."]
+            ]}
         ]
+
     };
+    
+    
+/*            ["t","Ah ! vous devez être la nouvelle recrue. Ca fait un moment qu’on vous attend. "],
+            ["a","Plus besoin d’attendre, je suis prêt pour l’action.", "Euh… moi… je ne fais que passer…"],
+            ["t","Voilà qui est parlé !", "Peu importe, on a besoin de tout le monde"],
+            ["t","Allez voir le caporal Delaporte il vous donnera toutes les explications dont vous avez besoin.","Allez voir le caporal Delaporte il vous donnera toutes les explications dont vous avez besoin."] 
+*/
 
     var Npc = Character.extend({
         init: function(id, kind) {
@@ -193,52 +497,56 @@ define(['character'], function(Character) {
 				this.talkCount = NpcTalk[this.itemKind][this.discourse]["text"].length;
 			}
             this.talkIndex = 0;
+            this.talkChoice = 1;
+            
         },
         
-        selectTalk: function(game){
-			var change = false;
-			if(this.discourse != -1){
-				var found = false;
-				for(var i = 1; !found && i<NpcTalk[this.itemKind].length; i++){
-					if(NpcTalk[this.itemKind][i]["condition"](game)){
-						if(this.discourse != i){
-							change = true;
-							this.discourse = i;
-							this.talkCount = NpcTalk[this.itemKind][this.discourse]["text"].length;
-						}
-						found = true;
-					}
-				}
-				if(!found){
-					if(this.discourse != 0){
-						change = true;
-						this.discourse = 0;
-						this.talkCount = NpcTalk[this.itemKind][this.discourse]["text"].length;
-					}
-				}
-			}
-			return change;
-		},
+        selectTalk: function (game) {
+            var change = false;
+            if (this.discourse != -1) {
+                var found = false;
+                for (var i = 1; !found && i < NpcTalk[this.itemKind].length; i++) {
+                    if (NpcTalk[this.itemKind][i]["condition"](game)) {
+                        if (this.discourse != i) {
+                            change = true;
+                            this.discourse = i;
+                            this.talkCount = NpcTalk[this.itemKind][this.discourse]["text"].length;
+                        }
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    if (this.discourse != 0) {
+                        change = true;
+                        this.discourse = 0;
+                        this.talkCount = NpcTalk[this.itemKind][this.discourse]["text"].length;
+                    }
+                }
+            }
+            return change;
+        },
 
-        talk: function(game) {
+    talk: function (game) { //111 SRR
             var msg = "";
 
-            if(this.selectTalk(game) || (this.talkIndex > this.talkCount) ){
+            if (this.selectTalk(game) || (this.talkIndex > this.talkCount)) {
                 this.talkIndex = 0;
             }
-            if(this.talkIndex < this.talkCount) {
-				if(this.discourse == -1){
-					msg = NpcTalk[this.itemKind][this.talkIndex];
-				}
-				else{
-					msg = NpcTalk[this.itemKind][this.discourse]["text"][this.talkIndex];
-				}
+
+            if (this.talkIndex < this.talkCount) {
+                if (this.discourse == -1) {
+                    msg = NpcTalk[this.itemKind][0]['text'][this.talkIndex];
+                } else {
+                    msg = NpcTalk[this.itemKind][this.discourse]["text"][this.talkIndex];
+                }
+
+
             }
             this.talkIndex += 1;
 
-            return msg.replace('*name*',game.player.name);
+            return msg;
+
         }
     });
-
-    return Npc;
+return Npc;
 });

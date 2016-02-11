@@ -38,6 +38,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             this.handlers[Types.Messages.GUILDERROR] = this.receiveGuildError;
             this.handlers[Types.Messages.GUILD] = this.receiveGuild;
             this.handlers[Types.Messages.PVP] = this.receivePVP;
+            this.handlers[Types.Messages.GLOBALQUEST] = this.receiveGlobalQuest; //SRR
             this.useBison = false;
             this.enable();
         },
@@ -65,9 +66,9 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                     if(reply.status === 'OK') {
                         self.dispatched_callback(reply.host, reply.port);
                     } else if(reply.status === 'FULL') {
-                        alert("BrowserQuest is currently at maximum player population. Please retry later.");
+                        alert("Le monde d'Akera est actuellement trop peuplé. Essayez plus tard.");
                     } else {
-                        alert("Unknown error while connecting to BrowserQuest.");
+                        alert("Erreur inconnue lors de la connexion à Akera.");
                     }
                 });
             } else {
@@ -106,9 +107,9 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 
                     if(self.disconnected_callback) {
                         if(self.isTimeout) {
-                            self.disconnected_callback("You have been disconnected for being inactive for too long");
+                            self.disconnected_callback("Vous êtes resté trop longtemps inactif.");
                         } else {
-                            self.disconnected_callback("The connection to BrowserQuest has been lost");
+                            self.disconnected_callback("La connexion au monde d'Akera a été perdue.");
                         }
                     }
                 });
@@ -179,10 +180,12 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                 weapon = data[7],
                 avatar = data[8],
                 weaponAvatar = data[9],
-                experience = data[10];
-
+                experience = data[10],
+                gender = data[11],
+                achievements = data[12],
+                pface = data[13];
             if(this.welcome_callback) {
-                this.welcome_callback(id, name, x, y, hp, armor, weapon, avatar, weaponAvatar, experience);
+                this.welcome_callback(id, name, x, y, hp, armor, weapon, avatar, weaponAvatar, experience, gender, achievements, pface);
             }
         },
 
@@ -233,13 +236,15 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                     this.spawn_chest_callback(item, x, y);
                 }
             } else {
-                var name, orientation, target, weapon, armor, level;
+                var name, orientation, target, weapon, armor, level, gender, pface;
 
                 if(Types.isPlayer(kind)) {
                     name = data[5];
                     orientation = data[6];
                     armor = data[7];
                     weapon = data[8];
+                    gender = data[10]; //SRR
+                    pface = data[11];
                     if(data.length > 9) {
                         target = data[9];
                     }
@@ -254,8 +259,11 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                 var character = EntityFactory.createEntity(kind, id, name);
 
                 if(character instanceof Player) {
+                    var Sarmor = Types.getKindAsString(armor);
                     character.weaponName = Types.getKindAsString(weapon);
-                    character.spriteName = Types.getKindAsString(armor);
+                    character.spriteName = Sarmor + gender;
+                    character.gender = gender; //SRR
+                    character.pface = pface;
                 }
 
                 if(this.spawn_character_callback) {
@@ -296,10 +304,12 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 
         receiveEquipItem: function(data) {
             var id = data[1],
-                itemKind = data[2];
+                itemKind = data[2],
+                gender = data[3];
+            
 
             if(this.equip_callback) {
-                this.equip_callback(id, itemKind);
+                this.equip_callback(id, itemKind, gender);
             }
         },
 
@@ -344,6 +354,14 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 
             if(this.population_callback) {
                 this.population_callback(worldPlayers, totalPlayers);
+            }
+        },
+        
+        receiveGlobalQuest: function(data) {
+            var gq = data[1];
+            
+            if(this.globalquest_callback) {
+                this.globalquest_callback(gq);
             }
         },
 
@@ -424,10 +442,6 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 			else if( (data[1] === Types.Messages.GUILDACTION.INVITE) &&
 				this.guildinvite_callback){
 				this.guildinvite_callback(data[2], data[3], data[4]);//id, name, invitor name
-			}
-			else if( (data[1] === Types.Messages.GUILDACTION.POPULATION) &&
-				this.guildpopulation_callback){
-				this.guildpopulation_callback(data[2], data[3]);//name, count
 			}
 			else if( (data[1] === Types.Messages.GUILDACTION.JOIN) &&
 				this.guildjoin_callback){				
@@ -518,6 +532,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         onPopulationChange: function(callback) {
             this.population_callback = callback;
         },
+        
+        onGlobalQuestChange: function(callback) {
+            this.globalquest_callback = callback;
+        },
 
         onEntityList: function(callback) {
             this.list_callback = callback;
@@ -572,16 +590,15 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 		onReceiveGuildMembers: function(callback) {
 			this.guildonlinemembers_callback = callback;
 		},
-		
-		onGuildPopulation: function(callback) {
-			this.guildpopulation_callback = callback;
-		},
 
         sendCreate: function(player) {
             this.sendMessage([Types.Messages.CREATE,
                               player.name,
                               player.pw,
-                              player.email]);
+                              player.email,
+				                player.gender, //SRR
+                                player.pface
+                             ]);   
         },
 
         sendLogin: function(player) {
@@ -676,6 +693,14 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         sendWho: function(ids) {
             ids.unshift(Types.Messages.WHO);
             this.sendMessage(ids);
+        },
+        
+        sendAchievement: function(id) {         //SRR
+            this.sendMessage([Types.Messages.ACHIEVEMENT, id]);
+        },
+        
+        sendGlobalQuest: function(score) {      //SRR
+            this.sendMessage([Types.Messages.GLOBALQUEST, score]);
         },
         
         sendNewGuild: function(name) {

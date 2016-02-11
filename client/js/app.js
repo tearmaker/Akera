@@ -1,9 +1,12 @@
 
-define(['jquery', 'storage'], function($, Storage) {
+define(['jquery', 'storage', 'util'], function($, Storage) {
 
     var App = Class.extend({
         init: function() {
             this.currentPage = 1;
+            this.crea_index = 1;   //SRR
+            this.crea_typeface = 'boy';
+            this.crea_gender = '';
             this.blinkInterval = null;
             this.isParchmentReady = true;
             this.ready = false;
@@ -32,7 +35,7 @@ define(['jquery', 'storage'], function($, Storage) {
 
             // Play button
             this.$play = $('.play');
-            this.getPlayButton = function() { return this.getActiveForm().find('.play span') };
+            this.getPlayButton = function() { return this.getActiveForm().find('.play r') };
             this.setPlayButtonState(true);
 
             // Login form fields
@@ -45,12 +48,15 @@ define(['jquery', 'storage'], function($, Storage) {
             this.$pwinput = $('#pwinput');
             this.$pwinput2 = $('#pwinput2');
             this.$email = $('#emailinput');
-            this.createNewCharacterFormFields = [this.$nameinput, this.$pwinput, this.$pwinput2, this.$email];
+		    // this.$gender = $('#genderinput'); //SRR
+            //this.$pface = $('#pfaceinput');
+            this.createNewCharacterFormFields = [this.$nameinput, this.$pwinput, this.$pwinput2, this.$email]; //SRR buggy
 
             // Functions to return the proper username / password fields to use, depending on which form
             // (login or create new character) is currently active.
             this.getUsernameField = function() { return this.createNewCharacterFormActive() ? this.$nameinput : this.$loginnameinput; };
             this.getPasswordField = function() { return this.createNewCharacterFormActive() ? this.$pwinput : this.$loginpwinput; };
+         //    this.getGenderField = function() { return this.createNewCharacterFormActive() ? this.$pwinput : this.$loginpwinput; }; //SRR
         },
 
         center: function() {
@@ -74,10 +80,14 @@ define(['jquery', 'storage'], function($, Storage) {
             var userpw = this.getPasswordField().attr('value');
             var email = '';
             var userpw2;
-
+            var gender; //SRR
+            var pface;
+            
             if(action === 'create') {
                 email = this.$email.attr('value');
                 userpw2 = this.$pwinput2.attr('value');
+                gender = this.crea_gender; //SRR
+                pface = this.crea_typeface + this.crea_index;
             }
 
             if(!this.validateFormFields(username, userpw, userpw2, email)) return;
@@ -89,15 +99,15 @@ define(['jquery', 'storage'], function($, Storage) {
                     log.debug("waiting...");
                     if(self.canStartGame()) {
                         clearInterval(watchCanStart);
-                        self.startGame(action, username, userpw, email);
+                        self.startGame(action, username, userpw, email, gender, pface);
                     }
                 }, 100);
             } else {
-                this.startGame(action, username, userpw, email);
+                this.startGame(action, username, userpw, email, gender, pface);
             }
         },
 
-        startGame: function(action, username, userpw, email) {
+        startGame: function(action, username, userpw, email, gender, pface) {
             var self = this;
             self.firstTimePlaying = !self.storage.hasAlreadyPlayed();
 
@@ -108,10 +118,10 @@ define(['jquery', 'storage'], function($, Storage) {
                 //>>includeStart("devHost", pragmas.devHost);
                 if(config.local) {
                     log.debug("Starting game with local dev config.");
-                    this.game.setServerOptions(config.local.host, config.local.port, username, userpw, email);
+                    this.game.setServerOptions(config.local.host, config.local.port, username, userpw, email, gender, pface); //SRR
                 } else {
                     log.debug("Starting game with default dev config.");
-                    this.game.setServerOptions(config.dev.host, config.dev.port, username, userpw, email);
+                    this.game.setServerOptions(config.dev.host, config.dev.port, username, userpw, email, gender, pface); //SRR
                 }
                 optionsSet = true;
                 //>>includeEnd("devHost");
@@ -119,7 +129,7 @@ define(['jquery', 'storage'], function($, Storage) {
                 //>>includeStart("prodHost", pragmas.prodHost);
                 if(!optionsSet) {
                     log.debug("Starting game with build config.");
-                    this.game.setServerOptions(config.build.host, config.build.port, username, userpw, email);
+                    this.game.setServerOptions(config.build.host, config.build.port, username, userpw, email, gender, pface); //SRR
                 }
                 //>>includeEnd("prodHost");
 
@@ -136,27 +146,27 @@ define(['jquery', 'storage'], function($, Storage) {
                         self.start();
                     } else {
                         self.setPlayButtonState(true);
-
+                        $('.go-play').show();
                         switch(result.reason) {
                             case 'invalidlogin':
                                 // Login information was not correct (either username or password)
-                                self.addValidationError(null, 'The username or password you entered is incorrect.');
+                                self.addValidationError(null, 'Nom ou mot de passe incorrect.');
                                 self.getUsernameField().focus();
                                 break;
                             case 'userexists':
                                 // Attempted to create a new user, but the username was taken
-                                self.addValidationError(self.getUsernameField(), 'The username you entered is not available.');
+                                self.addValidationError(self.getUsernameField(), 'Ce nom n\'est pas utilisable.');
                                 break;
                             case 'invalidusername':
                                 // The username contains characters that are not allowed (rejected by the sanitizer)
-                                self.addValidationError(self.getUsernameField(), 'The username you entered contains invalid characters.');
+                                self.addValidationError(self.getUsernameField(), 'Ce nom contient des caractères incorrects.');
                                 break;
                             case 'loggedin':
                                 // Attempted to log in with the same user multiple times simultaneously
-                                self.addValidationError(self.getUsernameField(), 'A player with the specified username is already logged in.');
+                                self.addValidationError(self.getUsernameField(), 'Un joueur avec le même nom est déjà connecté.');
                                 break;
                             default:
-                                self.addValidationError(null, 'Failed to launch the game: ' + (result.reason ? result.reason : '(reason unknown)'));
+                                self.addValidationError(null, 'Impossible de lancer le jeu : ' + (result.reason ? result.reason : '(reason unknown)'));
                                 break;
                         }
                     }
@@ -167,8 +177,8 @@ define(['jquery', 'storage'], function($, Storage) {
         start: function() {
             this.hideIntro();
             $('body').addClass('started');
-            if(self.firstTimePlaying) {
-                this.toggleInstructions();
+            if(this.firstTimePlaying) {
+                this.toggleInstructions(0);
             }
         },
         
@@ -186,10 +196,11 @@ define(['jquery', 'storage'], function($, Storage) {
             } else {
                 // Loading state
                 this.starting = true;
-                this.$play.addClass('loading');
+                //this.$play.addClass('loading');
+                //$('.go-play').addClass('loading');
                 $playButton.unbind('click');
                 this.playButtonRestoreText = $playButton.text();
-                $playButton.text('Loading...');
+                //$playButton.text('Chargement...');
             }
         },
 
@@ -216,33 +227,35 @@ define(['jquery', 'storage'], function($, Storage) {
             this.clearValidationErrors();
 
             if(!username) {
-                this.addValidationError(this.getUsernameField(), 'Please enter a username.');
+                this.addValidationError(this.getUsernameField(), 'Entrez un nom de personnage.');
                 return false;
             }
 
             if(!userpw) {
-                this.addValidationError(this.getPasswordField(), 'Please enter a password.');
+                this.addValidationError(this.getPasswordField(), 'Entrez un mot de passe.');
                 return false;
             }
 
             if(this.createNewCharacterFormActive()) {     // In Create New Character form (rather than login form)
                 if(!userpw2) {
-                    this.addValidationError(this.$pwinput2, 'Please confirm your password by typing it again.');
+                    this.addValidationError(this.$pwinput2, 'Confirmez votre mot de passe en l\'entrant à nouveau.');
                     return false;
                 }
 
                 if(userpw !== userpw2) {
-                    this.addValidationError(this.$pwinput2, 'The passwords you entered do not match. Please make sure you typed the password correctly.');
+                    this.addValidationError(this.$pwinput2, 'Vos mots de passe ne correspondent pas.');
                     return false;
                 }
 
                 // Email field is not required, but if it's filled out, then it should look like a valid email.
                 if(email && !this.validateEmail(email)) {
-                    this.addValidationError(this.$email, 'The email you entered appears to be invalid. Please enter a valid email (or leave the email blank).');
+                    this.addValidationError(this.$email, 'Votre email n\'est pas valide. (ou laissez le champs vide).');
                     return false;
                 }
             }
-
+            
+            this.addValidationError(this.getUsernameField(), 'Chargement...');
+            $('.go-play').hide();
             return true;
         },
 
@@ -253,12 +266,16 @@ define(['jquery', 'storage'], function($, Storage) {
         },
 
         addValidationError: function(field, errorText) {
-            $('<span/>', {
+            this.clearValidationErrors();
+            $('<span/>', {'class': 'validation-error blink'}).appendTo('.validation-summary');
+            $('.validation-error').html(errorText);
+           /*
+              $('<span/>', {
                 'class': 'validation-error blink',
                 text: errorText
-            }).appendTo('.validation-summary');
+            }).appendTo('.validation-summary'); */
 
-            if(field) {
+            if(field) { 
                 field.addClass('field-error').select();
                 field.bind('keypress', function (event) {
                     field.removeClass('field-error');
@@ -310,7 +327,7 @@ define(['jquery', 'storage'], function($, Storage) {
                 var sprite = target.sprite,
                     x = ((sprite.animationData.idle_down.length-1)*sprite.width),
                     y = ((sprite.animationData.idle_down.row)*sprite.height);
-                $(el+' .name').text(name);
+                $(el+' .name').text(Types.getNpcHudName(target.kind));  //SRR
 
                 //Show how much Health creature has left. Currently does not work. The reason health doesn't currently go down has to do with the lines below down to initExpBar...
                 if(target.healthPoints){
@@ -320,12 +337,11 @@ define(['jquery', 'storage'], function($, Storage) {
                 }
                 var level = Types.getMobLevel(Types.getKindFromString(name));
                 if(level !== undefined) {
-                    $(el + ' .level').text("Level " + level);
+                    $(el + ' .level').text("Niveau " + level);
                 }
                 else {
                     $('#inspector .level').text('');
                 }
-
                 $(el).fadeIn('fast');
             });
 
@@ -341,20 +357,31 @@ define(['jquery', 'storage'], function($, Storage) {
         },
          initExpBar: function(){
             var maxHeight = $("#expbar").height();
-
+            
+             
             this.game.onPlayerExpChange(function(expInThisLevel, expForLevelUp){
                var barHeight = Math.round((maxHeight / expForLevelUp) * (expInThisLevel > 0 ? expInThisLevel : 0));
-               $("#expbar").css('height', barHeight + "px");
+                var lvl = Types.getLevel(expForLevelUp);//this.game.player.level;
+               
+                $("#expbar").css('height', barHeight + "px");
+                $("#playerlevel").html("Nv."+ lvl );
             });
         },
 
-        initHealthBar: function() {
-            var scale = this.game.renderer.getScaleFactor(),
-                healthMaxWidth = $("#healthbar").width() - (12 * scale);
-
+        initHealthBar: function() {  //111
+            var scale = this.game.renderer.getScaleFactor();
+            var healthMaxWidth = $("#healthbar").width() - (12 * scale);
+            var width = this.game.renderer.getWidth();
+            
+            
+            if (width <= 480 ) { //la barre est coupée pour faire de la place
+                healthMaxWidth = 71;
+            }
+            
             this.game.onPlayerHealthChange(function(hp, maxHp) {
                 var barWidth = Math.round((healthMaxWidth / maxHp) * (hp > 0 ? hp : 0));
                 $("#hitpoints").css('width', barWidth + "px");
+                $("#hpnum").html(hp + "/" + maxHp);
             });
 
             this.game.onPlayerHurt(this.blinkHealthBar.bind(this));
@@ -406,7 +433,12 @@ define(['jquery', 'storage'], function($, Storage) {
             }
         },
 
-        toggleInstructions: function() {
+        toggleInstructions: function(page) {
+            
+            if (page == 0) {
+                $('#instructions li:first-child span').insertAfter("Vous avez gagné un niveau. Vos point de vie maximum augmente et vos dégâts aussi.");
+            }
+            
             if($('#achievements').hasClass('active')) {
                 this.toggleAchievements();
                 $('#achievementsbutton').removeClass('active');
@@ -416,7 +448,7 @@ define(['jquery', 'storage'], function($, Storage) {
 
         toggleAchievements: function() {
             if($('#instructions').hasClass('active')) {
-                this.toggleInstructions();
+                this.toggleInstructions(0);
                 $('#helpbutton').removeClass('active');
             }
             this.resetPage();
@@ -439,7 +471,8 @@ define(['jquery', 'storage'], function($, Storage) {
         initEquipmentIcons: function() {
             var scale = this.game.renderer.getScaleFactor(),
                 getIconPath = function(spriteName) {
-                    return 'img/'+ scale +'/item-' + spriteName + '.png';
+                    var spriteNameTreat = spriteToArmorName(spriteName); //SRR renvoie image de l'item ref bug pos, tronque le chiffre de fin
+                    return 'img/'+ scale +'/item-' + spriteNameTreat + '.png';
                 },
                 weapon = this.game.player.getWeaponName(),
                 armor = this.game.player.getSpriteName(),
@@ -450,6 +483,29 @@ define(['jquery', 'storage'], function($, Storage) {
             if(armor !== 'firefox') {
                 $('#armor').css('background-image', 'url("' + armorPath + '")');
             }
+            
+            this.updateItemIcons();
+
+        },
+        
+        updateItemIcons: function() {   //SRR
+            var scale = this.game.renderer.getScaleFactor(),
+                getIconPath = function(spriteName) {
+                    return 'img/'+ scale +'/' + spriteName + '.png';
+                },
+                slot1 = this.game.storage.getSlotItem(1),
+                slot2 = this.game.storage.getSlotItem(2);
+
+            if (slot1 !== "") {
+                var slot1Path = getIconPath(slot1);
+                $('#item1').css('background-image', 'url("' + slot1Path + '")');
+            }
+            
+            if (slot2 !== "") {
+                var slot2Path = getIconPath(slot2);
+                $('#item2').css('background-image', 'url("' + slot2Path + '")');
+            }
+            
         },
 
         hideWindows: function() {
@@ -458,7 +514,7 @@ define(['jquery', 'storage'], function($, Storage) {
                 $('#achievementsbutton').removeClass('active');
             }
             if($('#instructions').hasClass('active')) {
-                this.toggleInstructions();
+                this.toggleInstructions(0);
                 $('#helpbutton').removeClass('active');
             }
             if($('body').hasClass('credits')) {
@@ -472,7 +528,7 @@ define(['jquery', 'storage'], function($, Storage) {
             }
         },
 
-        showAchievementNotification: function(id, name) {
+        showAchievementNotification: function(id, name) {   //SRR 111
             var $notif = $('#achievement-notification'),
                 $name = $notif.find('.name'),
                 $button = $('#achievementsbutton');
@@ -493,7 +549,7 @@ define(['jquery', 'storage'], function($, Storage) {
         displayUnlockedAchievement: function(id) {
             var $achievement = $('#achievements li.achievement' + id),
                 achievement = this.game.getAchievementById(id);
-
+            
             if(achievement && achievement.hidden) {
                 this.setAchievementData($achievement, achievement.name, achievement.desc);
             }
@@ -526,15 +582,22 @@ define(['jquery', 'storage'], function($, Storage) {
                 if(!achievement.hidden) {
                     self.setAchievementData($a, achievement.name, achievement.desc);
                 }
-                $a.find('.twitter').attr('href', 'http://twitter.com/share?url=http%3A%2F%2Fbrowserquest.mozilla.org&text=I%20unlocked%20the%20%27'+ achievement.name +'%27%20achievement%20on%20Mozilla%27s%20%23BrowserQuest%21&related=glecollinet:Creators%20of%20BrowserQuest%2Cwhatthefranck');
+                $a.find('.twitter').attr('href', ''+ achievement.name +''); 
                 $a.show();
                 $a.find('a').click(function() {
                     var url = $(this).attr('href');
-
                     self.openPopup('twitter', url);
                     return false;
                 });
-
+                
+                if (achievement.serious) { //a remplacer en cas de changement
+                    $a.find('.coin').click(function() {
+                        var url = $(this).attr('href');
+                        self.openPopup('twitter', "https://www.youtube.com/watch?v=Ezy4So-GhQo");
+                        return false;
+                    });
+                }
+                
                 if((count - 1) % 4 === 0) {
                     page++;
                     $p = $page.clone();
@@ -576,7 +639,47 @@ define(['jquery', 'storage'], function($, Storage) {
 
                 if(content !== 'about') {
                     $('#helpbutton').removeClass('active');
+                    alert("lol");
                 }
+                
+                //MAP SSR
+                if(content == 'about') {
+                    var nextQuest = this.game.storage.getQuestRank() + 1;
+                    var goal = this.game.getDescById(nextQuest);    //SRR
+                    $('#achievements-goal').html("Quête en cours : " + goal);
+                    
+                    var scale = this.game.renderer.scale;
+                    var coef = 3.1 * scale; //ratio taille en pixel/taille en tile   978/313
+                    var playerX = this.game.player.gridX;
+                    var playerY = this.game.player.gridY;
+                    
+                    var jx = Math.round(playerX * coef) - 15; //moitié taille en largeur du marqueur
+                    var jy = 150 - Math.round(playerY * coef); //150 = moitié de la hauteur de la map
+                    
+                    var qx = Math.round(19 * coef) - 27; //19 x de la caserne
+                    var qy = 150 - Math.round((playerY - 121) * coef) + 30; //123 y de la caserne
+                    
+                    $('#about').css({backgroundPosition: '0px '+ jy +'px'});
+                    $('#about').css({backgroundSize: 'auto'  });
+                    //$('#mapmarkers').css({backgroundPosition: jx + 'px 49%, '+ qx +'px '+ qy +'px'});
+                    
+                    
+                    if(playerX > 130){ //inside case
+                         $('#about').css({backgroundSize: '0'  });
+                        $('#mapmarkers').css({backgroundPosition: '-9999px -9999px,      -9999px -9999px,      -9999px -9999px,        -9999px -9999px'     });
+                        
+                    } else if(playerY > (123+26)){
+                        $('#mapmarkers').css({backgroundPosition: jx + 'px 49%,'        + qx +'px '+ qy +'px,       '+ qx +'px 1%,        -9999px -9999px'     }); //marker player, quest, top, down
+                    
+                    } else if(playerY < (123 - 26)){
+                         $('#mapmarkers').css({backgroundPosition: jx + 'px 49%,'        + qx +'px '+ qy +'px,      -9999px -9999px,        '+ qx +'px 99%'     });
+                        
+                    } else {
+                        $('#mapmarkers').css({backgroundPosition: jx + 'px 49%,'        + qx +'px '+ qy +'px,       -9999px -9999px,        -9999px -9999px'     });
+                    }
+                    
+                }
+                
             } else {
                 if(currentState !== 'animate') {
                     if(currentState === content) {
@@ -704,7 +807,48 @@ define(['jquery', 'storage'], function($, Storage) {
                     this.game.renderer.rescale(newScale);
                 }
             }
-        }
+        },
+        
+        refreshCreaCharacter: function(){ //SRR
+            if (this.crea_typeface == 'girl') {
+                this.crea_gender = '2';
+            } else {
+                this.crea_gender = '';
+            }
+            $('#img_avat').css("background-image", "url('../img/3/clotharmor"+ this.crea_gender +".png'), url('../img/3/pface_"+ this.crea_typeface + this.crea_index +".png')");
+        },
+        
+        updateWorldBar: function (gq) {
+                /* var scale = this.game.renderer.getScaleFactor(),
+                worldMaxWidth = $("#worldbar").width() - (12 * scale),
+                var maxgq = 3;
+
+                var barWidth = Math.round((worldMaxWidth / maxgq) * (gq > 0 ? gq : 0)); */
+                var scale = this.game.renderer.getScaleFactor();
+                var maxgq = 20; //à changer aussi coté serveur... this.globalQuest >
+                var gqIncrement = ($("#worldbar").width() - 10 * scale) / 2 / maxgq;
+                
+                if (gq >= maxgq) {
+                    this.game.showNotification("Félicitations à tous !");
+                } else if (-gq >= maxgq) {
+                    this.game.showNotification("La situation est catastrophique");
+                } else {
+                    if(gq >= 0) {
+                        var barWidth = gqIncrement * gq; //177 t2
+                        $("#worldpoints").css('width', barWidth + "px");
+                        $("#worldpoints_neg").css('width', "0px");
+                    } else {
+                        gq = -gq;
+                        var barWidth = gqIncrement * gq; //177 t2
+                        $("#worldpoints_neg").css('width', barWidth + "px");
+                        $("#worldpoints").css('width', "0px");
+                    }
+                }
+                //$("#globalquest").text("Quete globale : " + gq + "/3");
+
+            }
+
+
     });
 
     return App;

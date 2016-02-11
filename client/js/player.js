@@ -1,64 +1,69 @@
 
-define(['character', 'exceptions'], function(Character, Exceptions) {
+define(['character', 'exceptions', 'util'], function (Character, Exceptions) {
 
     var Player = Character.extend({
         MAX_LEVEL: 10,
 
-        init: function(id, name, pw, kind, guild) {
+        init: function (id, name, pw, kind, guild, gender, pface) {
             this._super(id, kind);
 
             this.name = name;
             this.pw = pw;
-            
+            this.gender = gender; //SRR
+            this.pface = pface;
+            this.mapzone = "";
+
             if (typeof guild !== 'undefined') {
 				this.setGuild(guild);
 			}
 
             // Renderer
-             this.nameOffsetY = -10;
-
+             this.nameOffsetY = -13;
+                
             // sprites
             this.spriteName = "clotharmor";
-            this.armorName = "clotharmor";
+            this.armorName = "clotharmor" + gender;
             this.weaponName = "sword1";
 
             // modes
             this.isLootMoving = false;
             this.isSwitchingWeapon = true;
-
+            
+            //Achiev   
+            this.achievements = "sword1";
+            
             // PVP Flag
             this.pvpFlag = true;
         },
 
-        getGuild: function() {
+        getGuild: function () {
 			return this.guild;
 		},
 		
-		setGuild: function(guild) {
+		setGuild: function (guild) {
 			this.guild = guild;
 			$('#guild-population').addClass("visible");
 			$('#guild-name').html(guild.name);
 		},
 		
-		unsetGuild: function(){
+		unsetGuild: function (){
 			delete this.guild;
 			$('#guild-population').removeClass("visible");
 		},
 		
-        hasGuild: function(){
+        hasGuild: function (){
 			return (typeof this.guild !== 'undefined');
 		},
-		
 			
-		addInvite: function(inviteGuildId){
+		addInvite: function (inviteGuildId){
 			this.invite = {time:new Date().valueOf(), guildId: inviteGuildId};
 		},
 		
-		deleteInvite: function(){
+		deleteInvite: function (){
 			delete this.invite;
 		},
 		
-		checkInvite: function(){
+		checkInvite: function (){
 			if(this.invite && ( (new Date().valueOf() - this.invite.time) < 595000)){
 				return this.invite.guildId;
 			}
@@ -73,29 +78,31 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
 			}
 		},
 
-        loot: function(item) {
+        loot: function (item) {
             if(item) {
                 var rank, currentRank, msg, currentArmorName;
 
                 if(this.currentArmorSprite) {
                     currentArmorName = this.currentArmorSprite.name;
+                    currentArmorName = spriteToArmorName(currentArmorName);
                 } else {
                     currentArmorName = this.spriteName;
+                    currentArmorName = spriteToArmorName(currentArmorName);
                 }
 
-                if(item.type === "armor") {
+                if(item.type === "armor") {              //SRR Comparaison des rank au moment du loot
                     rank = Types.getArmorRank(item.kind);
-                    currentRank = Types.getArmorRank(Types.getKindFromString(currentArmorName));
-                    msg = "You are wearing a better armor";
+                    currentRank = Types.getArmorRank(Types.getKindFromString(currentArmorName)); //111 SRR
+                    msg = "Vous avez un meilleur équipement";
                 } else if(item.type === "weapon") {
                     rank = Types.getWeaponRank(item.kind);
                     currentRank = Types.getWeaponRank(Types.getKindFromString(this.weaponName));
-                    msg = "You are wielding a better weapon";
+                    msg = "Vous avez une meilleure arme";
                 }
 
                 if(rank && currentRank) {
                     if(rank === currentRank) {
-                        throw new Exceptions.LootException("You already have this "+item.type);
+                        throw new Exceptions.LootException("Vous l'avez déjà sur vous");
                     } else if(rank <= currentRank) {
                         throw new Exceptions.LootException(msg);
                     }
@@ -112,46 +119,75 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
         /**
          * Returns true if the character is currently walking towards an item in order to loot it.
          */
-        isMovingToLoot: function() {
+        isMovingToLoot: function () {
             return this.isLootMoving;
         },
 
-        getSpriteName: function() {
+        getSpriteName: function () {
             return this.spriteName;
         },
 
-        setSpriteName: function(name) {
+        setSpriteName: function (name) {
             this.spriteName = name;
         },
 
-        getArmorName: function() {
+        getArmorName: function () {
             var sprite = this.getArmorSprite();
             return sprite.id;
         },
 
-        getArmorSprite: function() {
+        getArmorSprite: function () {
             if(this.invincible) {
                 return this.currentArmorSprite;
             } else {
                 return this.sprite;
             }
         },
-        setArmorName: function(name){
+        setArmorName: function (name){
             this.armorName = name;
         },
 
-        getWeaponName: function() {
+        getWeaponName: function () {
             return this.weaponName;
         },
         
-        setWeaponName: function(name) {
+        setWeaponName: function (name) {
             this.weaponName = name;
         },
+        
+        setGender: function (gender) { //SRR
+            this.gender = gender; 
+        },
+        
+        setPface: function (pface) { 
+            this.pface = pface; 
+        },
+        
+        getPface: function () { //SRR 
+            return this.pface; 
+        },
+        
+        setMapzone: function (zone) { 
+            this.mapzone = zone; 
+        },
+        
+        getMapzone: function () { //SRR 
+            return this.mapzone; 
+        },
+        
+        setAchievements: function (achiev) {  //SRR
+            this.achievements = achiev.split(',').map(Number); 
+        },
+        
+        hasUnlockedAchievement: function(id) {
+            return _.include(this.achievements, id);
+        },
 
-        hasWeapon: function() {
+        hasWeapon: function () {
             return this.weaponName !== null;
         },
-        equipFromInventory: function(type, inventoryNumber, sprites){
+        
+        equipFromInventory: function (type, inventoryNumber, sprites){
             var itemString = Types.getKindAsString(this.inventory[inventoryNumber]);
 
             if(itemString){
@@ -170,7 +206,8 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
                 }
             }
         },
-        switchArmor: function(armorName, sprite){
+        switchArmor: function (armorName, sprite){
+            //SRR fonction non appelée (pour l'inventaire?)
             this.setSpriteName(armorName);
             this.setSprite(sprite);
             this.setArmorName(armorName);
@@ -178,12 +215,12 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
               this.switch_callback();
             }
         },
-        switchWeapon: function(newWeaponName) {
+        switchWeapon: function (newWeaponName) {
             var count = 14,
                 value = false,
                 self = this;
 
-            var toggle = function() {
+            var toggle = function () {
                 value = !value;
                 return value;
             };
@@ -194,7 +231,7 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
                 }
 
                 this.switchingWeapon = true;
-                var blanking = setInterval(function() {
+                var blanking = setInterval(function () {
                     if(toggle()) {
                         self.setWeaponName(newWeaponName);
                     } else {
@@ -214,12 +251,12 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
             }
         },
 
-        switchArmor: function(newArmorSprite) {
+        switchArmor: function (newArmorSprite) {
             var count = 14,
                 value = false,
                 self = this;
 
-            var toggle = function() {
+            var toggle = function () {
                 value = !value;
                 return value;
             };
@@ -232,7 +269,7 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
                 this.isSwitchingArmor = true;
                 self.setSprite(newArmorSprite);
                 self.setSpriteName(newArmorSprite.id);
-                var blanking = setInterval(function() {
+                var blanking = setInterval(function () {
                     self.setVisible(toggle());
 
                     count -= 1;
@@ -248,19 +285,19 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
             }
         },
 
-        onArmorLoot: function(callback) {
+        onArmorLoot: function (callback) {
             this.armorloot_callback = callback;
         },
 
-        onSwitchItem: function(callback) {
+        onSwitchItem: function (callback) {
             this.switch_callback = callback;
         },
 
-        onInvincible: function(callback) {
+        onInvincible: function (callback) {
             this.invincible_callback = callback;
         },
         
-        startInvincibility: function() {
+        startInvincibility: function () {
             var self = this;
 
             if(!this.invincible) {
@@ -274,13 +311,13 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
                 }
             }
 
-            this.invincibleTimeout = setTimeout(function() {
+            this.invincibleTimeout = setTimeout(function () {
                 self.stopInvincibility();
                 self.idle();
             }, 15000);
         },
 
-        stopInvincibility: function() {
+        stopInvincibility: function () {
             this.invincible_callback();
             this.invincible = false;
 
@@ -293,7 +330,7 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
                 clearTimeout(this.invincibleTimeout);
             }
          },
-        flagPVP: function(pvpFlag){
+        flagPVP: function (pvpFlag){
             this.pvpFlag = pvpFlag;
        }
     });

@@ -63,7 +63,19 @@ define(function() {
         "exp": {
             fill: "rgb(80, 80, 255)",
             stroke: "rgb(50, 50, 255)"
+       },
+        
+        "good": {
+            fill: "rgb(50, 200, 255)",
+            stroke: "white"
+       },
+        
+        "bad": {
+            fill: "rgb(200, 0, 0)",
+            stroke: "black"
        }
+        
+        
     };
 
 

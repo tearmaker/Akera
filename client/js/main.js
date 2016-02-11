@@ -6,7 +6,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
         $(document).ready(function() {
             app = new App();
             app.center();
-
+            
             if(Detect.isWindows()) {
                 // Workaround for graphical glitches on text
                 $('body').addClass('windows');
@@ -95,19 +95,23 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                     }
                 };
             });
+            
+            $( ".logobody" ).click(function() {
+              location.reload();
+            });
 
             $('#create-new span').click(function() {
                 app.animateParchment('loadcharacter', 'confirmation');
             });
 
-            $('#continue span').click(function() {
+            $('#crea_continue').click(function() {
                 app.storage.clear();
                 app.animateParchment('confirmation', 'createcharacter');
                 $('body').removeClass('returning');
                 app.clearValidationErrors();
             });
 
-            $('#cancel span').click(function() {
+            $('#crea_cancel').click(function() {
                 app.animateParchment('confirmation', 'loadcharacter');
             });
 
@@ -128,6 +132,41 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                 app.toggleButton();
             });
 
+            /*
+            $('#genderinput').change(function() {  //SRR
+                var gen = $('#genderinput').attr('value');
+                $('#img_avat').attr('src', 'img/genders/avat'+gen+'.png');
+            });
+            
+            $('#pfaceinput').change(function() {  //SRR
+                var pface = $('#pfaceinput').attr('value');
+            });
+            */
+            
+            $('#crea_next').click(function() {
+                app.crea_index = app.crea_index + 1;
+                if (app.crea_index > 3) { app.crea_index = 1;}  //boucle
+                app.refreshCreaCharacter();
+            });
+            
+            $('#crea_prev').click(function() {
+                app.crea_index = app.crea_index - 1;
+                if (app.crea_index < 1) { app.crea_index = 3;}  //boucle
+                app.refreshCreaCharacter();
+            });
+            
+             $('#crea_male').click(function() {
+                app.crea_typeface = 'boy';
+               app.refreshCreaCharacter();
+            });
+            
+             $('#crea_female').click(function() {
+                app.crea_typeface = 'girl';
+                app.refreshCreaCharacter();
+            });
+            
+            
+            
             $('#previous').click(function() {
                 var $achievements = $('#achievements');
 
@@ -151,6 +190,37 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                     $achievements.removeClass().addClass('active page' + app.currentPage);
                 }
             });
+            
+            $('#achievements-quests').click(function() { //SRR
+                var nb = 1;
+                if(app.currentPage === nb) {
+                    return false;
+                } else {
+                    app.currentPage = nb;
+                    $('#achievements').removeClass().addClass('active page'+nb);
+                }
+            });
+            
+             $('#achievements-seconds').click(function() { //SRR
+                var nb = 3;
+                if(app.currentPage === nb) {
+                    return false;
+                } else {
+                    app.currentPage = nb;
+                    $('#achievements').removeClass().addClass('active page'+nb);
+                }
+            });
+            
+             $('#achievements-infos').click(function() { //SRR
+                var nb = 6;
+                if(app.currentPage === nb) {
+                    return false;
+                } else {
+                    app.currentPage = nb;
+                    $('#achievements').removeClass().addClass('active page'+nb);
+                }
+            });
+            
 
             $('#notifications div').bind(TRANSITIONEND, app.resetMessagesPosition.bind(app));
 
@@ -180,7 +250,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                 }
             }
 
-            $('.play span').click(function(event) {
+            $('.play r').click(function(event) {
                 app.tryStartingGame();
             });
 
@@ -220,7 +290,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
             });
 
             game.onDisconnect(function(message) {
-                $('#death').find('p').html(message+"<em>Please reload the page.</em>");
+                $('#death').find('p').html(message+"<em>Veuillez recharger la page.</em>");
                 $('#respawn').hide();
             });
 
@@ -239,7 +309,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                 $('#hitpoints').toggleClass('invincible');
             });
 
-            game.onNbPlayersChange(function(worldPlayers, totalPlayers) {
+            game.onNbPlayersChange(function(worldPlayers, totalPlayers) {   //111
                 var setWorldPlayersString = function(string) {
                         $("#instance-population").find("span:nth-child(2)").text(string);
                         $("#playercount").find("span:nth-child(2)").text(string);
@@ -252,32 +322,18 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
 
                 $("#instance-population").find("span").text(worldPlayers);
                 if(worldPlayers == 1) {
-                    setWorldPlayersString("player");
+                    setWorldPlayersString("joueur");
                 } else {
-                    setWorldPlayersString("players");
+                    setWorldPlayersString("joueurs");
                 }
 
                 $("#world-population").find("span:nth-child(1)").text(totalPlayers);
                 if(totalPlayers == 1) {
-                    setTotalPlayersString("player");
+                    setTotalPlayersString("joueur");
                 } else {
-                    setTotalPlayersString("players");
+                    setTotalPlayersString("joueurs");
                 }
             });
-            					
-            game.onGuildPopulationChange( function(guildName, guildPopulation) {
-				var setGuildPlayersString = function(string) {
-					$("#guild-population").find("span:nth-child(2)").text(string);
-				};
-				$('#guild-population').addClass("visible");
-                $("#guild-population").find("span").text(guildPopulation);
-				$('#guild-name').text(guildName);
-                if(guildPopulation == 1) {
-                    setGuildPlayersString("player");
-                } else {
-                    setGuildPlayersString("players");
-                }
-			});
 
             game.onAchievementUnlock(function(id, name, description) {
                 app.unlockAchievement(id, name);
@@ -294,7 +350,9 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
             $('#pwinput').attr('value', '');
             $('#pwinput2').attr('value', '');
             $('#emailinput').attr('value', '');
-           $('#chatbox').attr('value', '');
+		      $('#genderinput').attr('value', ''); //SRR
+           $('#pfaceinput').attr('value', '');
+            $('#chatbox').attr('value', '');
 
             if(game.renderer.mobile || game.renderer.tablet) {
                 $('#foreground').bind('touchstart', function(event) {
@@ -365,6 +423,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                 }
             });
 
+            /*
             $(document).keyup(function(e) {
                 var key = e.which;
                 
@@ -372,25 +431,25 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                 {
                     switch(key) {
                         case Types.Keys.LEFT:
-                        case Types.Keys.A:
+                        case 81:
                         case Types.Keys.KEYPAD_4:
                             game.player.moveLeft = false;
                             game.player.disableKeyboardNpcTalk = false;
                             break;
                         case Types.Keys.RIGHT:
-                        case Types.Keys.D:
+                        case 68:
                         case Types.Keys.KEYPAD_6:
                             game.player.moveRight = false;
                             game.player.disableKeyboardNpcTalk = false;
                             break;
                         case Types.Keys.UP:
-                        case Types.Keys.W:
+                        case 90:
                         case Types.Keys.KEYPAD_8:
                             game.player.moveUp = false;
                             game.player.disableKeyboardNpcTalk = false;
                             break;
                         case Types.Keys.DOWN:
-                        case Types.Keys.S:
+                        case 83:
                         case Types.Keys.KEYPAD_2:
                             game.player.moveDown = false;
                             game.player.disableKeyboardNpcTalk = false;
@@ -399,7 +458,7 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                             break;
                     }
                 }
-            });
+            }); */
 
             $(document).keydown(function(e) {
                 var key = e.which,
@@ -420,26 +479,26 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                         y: game.player.gridY
                     };
                     switch(key) {
-                        case Types.Keys.LEFT:
-                        case Types.Keys.A:
+                        /*case Types.Keys.LEFT:
+                        case 81:
                         case Types.Keys.KEYPAD_4:
                             game.player.moveLeft = true;
                             break;
                         case Types.Keys.RIGHT:
-                        case Types.Keys.D:
+                        case 68:
                         case Types.Keys.KEYPAD_6:
                             game.player.moveRight = true;
                             break;
                         case Types.Keys.UP:
-                        case Types.Keys.W:
+                        case 90:
                         case Types.Keys.KEYPAD_8:
                             game.player.moveUp = true;
                             break;
                         case Types.Keys.DOWN:
-                        case Types.Keys.S:
+                        case 83:
                         case Types.Keys.KEYPAD_2:
                             game.player.moveDown = true;
-                            break;
+                            break;*/
                         case Types.Keys.SPACE:
                             game.makePlayerAttackNext();
                             break;
@@ -591,7 +650,6 @@ define(['jquery', 'app', 'entrypoint'], function($, App, EntryPoint) {
                         }, 100);
                     }
                     hpg.css('left', e.offsetX + 'px');
-
                     game.hpGuide = (e.offsetX - hpp.left) / (hb.width()- hpp.left);
                 }
 

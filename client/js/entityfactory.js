@@ -27,6 +27,10 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.RAT] = function(id) {
         return new Mobs.Rat(id);
     };
+    
+    EntityFactory.builders[Types.Entities.RAT2] = function(id) {
+        return new Mobs.Rat2(id);
+    };
 
     EntityFactory.builders[Types.Entities.SKELETON] = function(id) {
         return new Mobs.Skeleton(id);
@@ -152,8 +156,8 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
         return new NPCs.King(id);
     };
 
-    EntityFactory.builders[Types.Entities.VILLAGEGIRL] = function(id) {
-        return new NPCs.VillageGirl(id);
+    EntityFactory.builders[Types.Entities.QUESTER02] = function(id) {
+        return new NPCs.Quester02(id);
     };
 
     EntityFactory.builders[Types.Entities.VILLAGER] = function(id) {
@@ -172,20 +176,20 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
         return new NPCs.Rick(id);
     };
 
-    EntityFactory.builders[Types.Entities.SCIENTIST] = function(id) {
-        return new NPCs.Scientist(id);
+    EntityFactory.builders[Types.Entities.QUESTER04] = function(id) {
+        return new NPCs.Quester04(id);
     };
 
     EntityFactory.builders[Types.Entities.NYAN] = function(id) {
         return new NPCs.Nyan(id);
     };
 
-    EntityFactory.builders[Types.Entities.PRIEST] = function(id) {
-        return new NPCs.Priest(id);
+    EntityFactory.builders[Types.Entities.QUESTER03] = function(id) {
+        return new NPCs.Quester03(id);
     };
 
-    EntityFactory.builders[Types.Entities.SORCERER] = function(id) {
-        return new NPCs.Sorcerer(id);
+    EntityFactory.builders[Types.Entities.QUESTER05] = function(id) {
+        return new NPCs.Quester05(id);
     };
 
     EntityFactory.builders[Types.Entities.OCTOCAT] = function(id) {
@@ -200,12 +204,86 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
         return new NPCs.ForestNpc(id);
     };
 
-    EntityFactory.builders[Types.Entities.DESERTNPC] = function(id) {
-        return new NPCs.DesertNpc(id);
+    EntityFactory.builders[Types.Entities.QUESTER01] = function(id) {
+        return new NPCs.Quester01(id);
     };
-
-    EntityFactory.builders[Types.Entities.LAVANPC] = function(id) {
-        return new NPCs.LavaNpc(id);
+    
+    EntityFactory.builders[Types.Entities.MALADE01] = function(id) {
+        return new NPCs.Malade01(id);
+    };
+    
+    EntityFactory.builders[Types.Entities.TRAP1] = function(id) {
+        return new NPCs.Trap1(id);
+    };
+    
+    EntityFactory.builders[Types.Entities.LORE01] = function(id) {
+        return new NPCs.Lore01(id);
+    };
+    
+    EntityFactory.builders[Types.Entities.LORE02] = function(id) {
+        return new NPCs.Lore02(id);
+    };
+    
+    EntityFactory.builders[Types.Entities.GITE01] = function(id) {
+        return new NPCs.Gite01(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE02] = function(id) {
+        return new NPCs.Gite02(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE03] = function(id) {
+        return new NPCs.Gite03(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE04] = function(id) {
+        return new NPCs.Gite04(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE05] = function(id) {
+        return new NPCs.Gite05(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE06] = function(id) {
+        return new NPCs.Gite06(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE07] = function(id) {
+        return new NPCs.Gite07(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE08] = function(id) {
+        return new NPCs.Gite08(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE09] = function(id) {
+        return new NPCs.Gite09(id);
+    };
+    EntityFactory.builders[Types.Entities.GITE10] = function(id) {
+        return new NPCs.Gite10(id);
+    };
+    
+    EntityFactory.builders[Types.Entities.VILLAGER01] = function(id) {
+        return new NPCs.Villager01(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER02] = function(id) {
+        return new NPCs.Villager02(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER03] = function(id) {
+        return new NPCs.Villager03(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER04] = function(id) {
+        return new NPCs.Villager04(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER05] = function(id) {
+        return new NPCs.Villager05(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER06] = function(id) {
+        return new NPCs.Villager06(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER07] = function(id) {
+        return new NPCs.Villager07(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER08] = function(id) {
+        return new NPCs.Villager08(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER09] = function(id) {
+        return new NPCs.Villager09(id);
+    };
+    EntityFactory.builders[Types.Entities.VILLAGER10] = function(id) {
+        return new NPCs.Villager10(id);
     };
 
     return EntityFactory;

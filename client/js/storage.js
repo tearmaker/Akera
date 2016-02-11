@@ -10,7 +10,7 @@ define(function() {
             }
         },
 
-        resetData: function() {
+        resetData: function() { 
             this.data = {
                 hasAlreadyPlayed: false,
                 player: {
@@ -18,15 +18,22 @@ define(function() {
                     weapon: "",
                     armor: "",
                     guild: "",
-                    image: ""
+                    image: "",
+                    ill: 0, //5 etapes de maladie 1/min
+                    itemSlot1: "", //herb(rick)/repulsif ou sable
+                    itemSlot2: "" 
                 },
                 achievements: {
                     unlocked: [],
+                    miniQuestsDone: [],
                     ratCount: 0,
                     skeletonCount: 0,
+                    crabCount: 0,
+                    giteCount : 0,
                     totalKills: 0,
                     totalDmg: 0,
-                    totalRevives: 0
+                    totalRevives: 0,
+                    questRank: 1
                 }
             };
         },
@@ -79,7 +86,7 @@ define(function() {
             this.save();
         },
         
-        setPlayerGuild: function(guild) {
+       /* setPlayerGuild: function(guild) { //bugggy
 			if(typeof guild !== "undefined") {
 				this.data.player.guild={id:guild.id, name:guild.name,members:JSON.stringify(guild.members)};
 				this.save();
@@ -89,12 +96,11 @@ define(function() {
 				this.save();
 			}
 		},
-
+        */
         savePlayer: function(img, armor, weapon, guild) {
             this.setPlayerImage(img);
             this.setPlayerArmor(armor);
             this.setPlayerWeapon(weapon);
-            this.setPlayerGuild(guild);
         },
 
         // Achievements
@@ -111,6 +117,11 @@ define(function() {
             }
             return false;
         },
+        
+        refreshAchievement: function(achiev_unlock) {
+                this.data.achievements.unlocked = achiev_unlock;
+                this.save();
+        },
 
         getAchievementCount: function() {
             return _.size(this.data.achievements.unlocked);
@@ -126,6 +137,46 @@ define(function() {
                 this.data.achievements.ratCount++;
                 this.save();
             }
+        },
+        
+        resetRatCount: function() {
+            this.data.achievements.ratCount = 0;
+            this.save();
+        },
+        
+        // Crabs (zombies de base)
+        getCrabCount: function() {
+            return this.data.achievements.crabCount;
+        },
+
+        incrementCrabCount: function() {
+            if(this.data.achievements.crabCount < 10) {
+                this.data.achievements.crabCount++;
+                this.save();
+            }
+        },
+        
+        resetCrabCount: function() {
+            this.data.achievements.crabCount = 0;
+            this.save();
+        },
+        
+        
+        // Gite quests
+        getGiteCount: function() {
+            return this.data.achievements.giteCount;
+        },
+
+        incrementGiteCount: function() {
+            if(this.data.achievements.giteCount < 10) {
+                this.data.achievements.giteCount++;
+                this.save();
+            }
+        },
+        
+        resetGiteCount: function() {
+            this.data.achievements.giteCount = 0;
+            this.save();
         },
 
         // Skull Collector
@@ -175,6 +226,75 @@ define(function() {
                 this.save();
             }
         },
+
+        
+        // QuestRank soit le rang de la derniere quete accompli
+        getQuestRank: function() {
+            return this.data.achievements.questRank; //SRR
+        },
+        
+        setQuestRank: function(rank) {
+            this.data.achievements.questRank = rank;
+            this.save();
+        },
+        
+        initQuestRank: function(list_achiev) {
+            var questRank = 0;
+            var last_main_quest = 16; //à changer aussi dans game
+            for (var i = 0; i < list_achiev.length; i++) {
+                if (list_achiev[i]> questRank && list_achiev[i] < last_main_quest) { //rang max quete histoire
+                    questRank = list_achiev[i];
+                }
+             }
+            this.setQuestRank(questRank);
+        },
+        
+        // Miniquest
+        hasDoneMiniQuest: function(npc) {
+            return _.include(this.data.achievements.miniQuestsDone, npc);
+        },
+
+        setMiniQuest: function(npc) {
+            if(!this.hasDoneMiniQuest(npc)) {
+                this.data.achievements.miniQuestsDone.push(npc);
+                this.save();
+                return true;
+            }
+            return false;
+        },
+        
+        //Illness
+        setPlayerIll: function(value) { 
+            this.data.player.ill = value;
+            this.save();
+        },
+        
+        getPlayerIll: function() { 
+            return this.data.player.ill;
+        },
+
+        
+        //Inventory
+        setSlotItem: function(nb_slot, value) {
+            if(nb_slot == 1){
+                this.data.player.itemSlot1 = value;
+                this.save();    
+            } else if (nb_slot == 2){
+                this.data.player.itemSlot2 = value;
+                this.save();
+            }
+            
+        },
+        
+        getSlotItem: function(nb_slot) { 
+            if(nb_slot == 1){
+                return this.data.player.itemSlot1;
+            } else if (nb_slot == 2){
+                return this.data.player.itemSlot2;
+            }
+        }
+        
+        
     });
 
     return Storage;

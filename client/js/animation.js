@@ -1,5 +1,5 @@
 
-define(function() {
+define(function () {
 
     var Animation = Class.extend({
         init: function(name, length, row, width, height) {

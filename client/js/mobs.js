@@ -5,10 +5,22 @@ define(['mob', 'timer'], function(Mob, Timer) {
         Rat: Mob.extend({
             init: function(id) {
                 this._super(id, Types.Entities.RAT);
-                this.moveSpeed = 350;
-                this.idleSpeed = 700;
-                this.shadowOffsetY = -2;
-                this.isAggressive = false;
+                this.moveSpeed = 130;
+                this.idleSpeed = 50;
+                this.setAttackRate(1500);
+                //this.shadowOffsetY = -2;
+                //this.isAggressive = false;
+            }
+        }),
+        
+        Rat2: Mob.extend({
+            init: function(id) {
+                this._super(id, Types.Entities.RAT2);
+                this.moveSpeed = 130;
+                this.idleSpeed = 50;
+                this.setAttackRate(1500);
+                //this.shadowOffsetY = -2;
+                //this.isAggressive = false;
             }
         }),
 
@@ -111,7 +123,7 @@ define(['mob', 'timer'], function(Mob, Timer) {
                 this._super(id, Types.Entities.EYE);
                 this.moveSpeed = 200;
                 this.atkSpeed = 40;
-                this.idleSpeed = 50;
+                this.idleSpeed = 250;
             }
         }),
 
@@ -131,7 +143,7 @@ define(['mob', 'timer'], function(Mob, Timer) {
                 this._super(id, Types.Entities.WIZARD);
                 this.moveSpeed = 200;
                 this.atkSpeed = 100;
-                this.idleSpeed = 150;
+                this.idleSpeed = 250;
             }
         }),
 
@@ -139,7 +151,7 @@ define(['mob', 'timer'], function(Mob, Timer) {
             init: function(id) {
                 this._super(id, Types.Entities.BOSS);
                 this.moveSpeed = 300;
-                this.atkSpeed = 50;
+                //this.atkSpeed = 50;
                 this.idleSpeed = 400;
                 this.atkRate = 2000;
                 this.attackCooldown = new Timer(this.atkRate);

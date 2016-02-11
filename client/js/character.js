@@ -38,9 +38,12 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
             this.isDead = false;
             this.attackingMode = false;
             this.followingMode = false;
+            this.shadowy = false;
 
             this.inspecting = null;
         },
+        
+        
 
         clean: function() {
             this.forEachAttacker(function(attacker) {
@@ -61,13 +64,34 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         hasWeapon: function() {
             return false;
         },
+        
+        setSickStats: function() {
+            this.atkSpeed = 100;
+            this.moveSpeed = 240;
+            this.idleSpeed = 900;
+            this.setAttackRate(1600);
+            this.shadowy = true;
+        },
+        
+        setCuredStats: function() {
+            this.atkSpeed = 50;
+            this.moveSpeed = 120;
+            this.idleSpeed = 450;
+            this.setAttackRate(800);
+            this.shadowy = false;
+            
+        },
 
         hasShadow: function() {
-            return true;
+            return this.shadowy;
+        },
+
+        setShadow: function(state) {
+            this.shadowy = state;
         },
 
         animate: function(animation, speed, count, onEndCount) {
-            var oriented = ['atk', 'walk', 'idle'],
+            var oriented = ['atk', 'walk', 'idle', 'atk2'],
                 o = this.orientation;
 
             if(!(this.currentAnimation && this.currentAnimation.name === "death")) { // don't change animation if the character is dying
@@ -100,8 +124,12 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         },
 
         hit: function(orientation) {
+            var alter_atk = "";
+                if (Math.floor((Math.random() * 2) + 1) == 2) {
+                    alter_atk = '2';
+                }
             this.setOrientation(orientation);
-            this.animate("atk", this.atkSpeed, 1);
+            this.animate("atk" + alter_atk, this.atkSpeed, 1);
         },
 
         walk: function(orientation) {
@@ -118,7 +146,6 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
             }
             else {
                 var path = this.requestPathfindingTo(x, y);
-
                 this.followPath(path);
             }
         },
@@ -407,7 +434,7 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         addAttacker: function(character) {
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
-            } else {
+            } else {         
                 log.error(this.id + " is already attacked by " + character.id);
             }
         },
@@ -419,9 +446,9 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
         removeAttacker: function(character) {
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
-            } else {
+            }/* else {         //SRR
                 log.error(this.id + " is not attacked by " + character.id);
-            }
+            } */
         },
 
         /**
@@ -557,9 +584,8 @@ define(['entity', 'transition', 'timer'], function(Entity, Transition, Timer) {
 
         hurt: function() {
             var self = this;
-
             this.stopHurting();
-            this.sprite = this.hurtSprite;
+            this.sprite = this.normalSprite.whiteSprite;
             this.hurting = setTimeout(this.stopHurting.bind(this), 75);
         },
 

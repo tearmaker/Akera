@@ -6,105 +6,105 @@ define(['item'], function(Item) {
         Sword2: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.SWORD2, "weapon");
-                this.lootMessage = "You pick up a steel sword";
+                //this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         Axe: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.AXE, "weapon");
-                this.lootMessage = "You pick up an axe";
+                //this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         RedSword: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.REDSWORD, "weapon");
-                this.lootMessage = "You pick up a blazing sword";
+                //this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         BlueSword: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.BLUESWORD, "weapon");
-                this.lootMessage = "You pick up a magic sword";
+                this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         GoldenSword: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.GOLDENSWORD, "weapon");
-                this.lootMessage = "You pick up the ultimate sword";
+                //this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         MorningStar: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.MORNINGSTAR, "weapon");
-                this.lootMessage = "You pick up a morning star";
+                //this.lootMessage = "Vous récupérez un meilleur ustensile";
             },
         }),
 
         LeatherArmor: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.LEATHERARMOR, "armor");
-                this.lootMessage = "You equip a leather armor";
+                //this.lootMessage = "Vous mettez de nouveaux vêtements";
             },
         }),
 
         MailArmor: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.MAILARMOR, "armor");
-                this.lootMessage = "You equip a mail armor";
+                //this.lootMessage = "Vous mettez de nouveaux vêtements";
             },
         }),
 
         PlateArmor: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.PLATEARMOR, "armor");
-                this.lootMessage = "You equip a plate armor";
+                //this.lootMessage = "Vous mettez de nouveaux vêtements";
             },
         }),
 
         RedArmor: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.REDARMOR, "armor");
-                this.lootMessage = "You equip a ruby armor";
+                //this.lootMessage = "Vous mettez de nouveaux vêtements";
             },
         }),
 
         GoldenArmor: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.GOLDENARMOR, "armor");
-                this.lootMessage = "You equip a golden armor";
+                //this.lootMessage = "Vous mettez de nouveaux vêtements";
             },
         }),
 
         Flask: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.FLASK, "object");
-                this.lootMessage = "You drink a health potion";
+                //this.lootMessage = "Vous avez bu une potion de soin";
             },
         }),
 
         Cake: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.CAKE, "object");
-                this.lootMessage = "You eat a cake";
+                //this.lootMessage = "Fout' i bon !";
             },
         }),
 
         Burger: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.BURGER, "object");
-                this.lootMessage = "You can haz rat burger";
+                //this.lootMessage = "Fout' i bon !";
             },
         }),
 
         FirePotion: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.FIREPOTION, "object");
-                this.lootMessage = "You feel the power of Firefox!";
+                //this.lootMessage = "Vous ressentez une puissance";
             },
 
             onLoot: function(player) {

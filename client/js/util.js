@@ -32,3 +32,14 @@ var getUrlVars = function() {
     });
     return vars;
 }
+
+
+var spriteToArmorName = function(spriteName) { //SRR transforme les noms de sprite en nom d'armure (en retirant le chiffre
+    var spriteNameTreat = spriteName; 
+    var patt1 = /\d$/;
+    var patt2 = /sword/;
+    if (patt1.test(spriteNameTreat) && !patt2.test(spriteNameTreat)){
+            spriteNameTreat = spriteNameTreat.substr(0, spriteNameTreat.length -1);
+    }
+    return spriteNameTreat;
+}
