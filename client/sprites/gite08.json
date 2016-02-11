@@ -1,0 +1,58 @@
+{
+	"id": "gite08",
+	"width": 16,
+	"height": 32,
+	"animations": {
+		"removed": {
+			"length": 1,
+			"row": 0
+		},
+		"idle_down": {
+			"length": 1,
+			"row": 1
+		},
+		"idle_down1": {
+			"length": 1,
+			"row": 1
+		},
+		"idle_down2": {
+			"length": 1,
+			"row": 3
+		},
+		"idle_down3": {
+			"length": 1,
+			"row": 5
+		},
+		"idle_down4": {
+			"length": 1,
+			"row": 7
+		},
+		"idle_down5": {
+			"length": 1,
+			"row": 9
+		},
+		"dry1": {
+			"length": 1,
+			"row": 2
+		},
+		"dry2": {
+			"length": 1,
+			"row": 4
+		},
+		"dry3": {
+			"length": 1,
+			"row": 6
+		},
+		"dry4": {
+			"length": 1,
+			"row": 8
+		},
+		"dry5": {
+			"length": 1,
+			"row": 10
+		}
+
+	},
+	"offset_x": 0,
+	"offset_y": -12
+}

@@ -1,0 +1,17 @@
+{
+	"id": "quester02",
+	"width": 32,
+	"height": 48,
+	"animations": {
+		"idle_down": {
+			"length": 2,
+			"row": 0
+		},
+		"quest_active": {
+			"length": 2,
+			"row": 1
+		}
+	},
+	"offset_x": -8,
+	"offset_y": -29
+}

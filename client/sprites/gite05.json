@@ -1,0 +1,42 @@
+{
+	"id": "gite05",
+	"width": 16,
+	"height": 16,
+	"animations": {
+		"removed": {
+			"length": 1,
+			"row": 0
+		},
+		"idle_down": {
+			"length": 1,
+			"row": 1
+		},
+		"idle_down1": {
+			"length": 1,
+			"row": 1
+		},
+		"idle_down2": {
+			"length": 1,
+			"row": 3
+		},
+		"idle_down3": {
+			"length": 1,
+			"row": 5
+		},
+		"dry1": {
+			"length": 1,
+			"row": 2
+		},
+		"dry2": {
+			"length": 1,
+			"row": 4
+		},
+		"dry3": {
+			"length": 1,
+			"row": 6
+		}
+
+	},
+	"offset_x": 0,
+	"offset_y": 0
+}

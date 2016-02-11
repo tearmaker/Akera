@@ -1,0 +1,17 @@
+{
+	"id": "trap1",
+	"width": 16,
+	"height": 32,
+	"animations": {
+		"idle_down": {
+			"length": 1,
+			"row": 0
+		},
+		"protected": {
+			"length": 1,
+			"row": 1
+		}
+	},
+	"offset_x": 0,
+	"offset_y": -12
+}
