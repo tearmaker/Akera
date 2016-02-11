@@ -32,6 +32,8 @@ Types = {
         PVP: 28,
         GUILD: 29,
         GUILDERROR: 30,
+        ACHIEVEMENT: 31,        
+        GLOBALQUEST: 32,        //SRR
         GUILDERRORTYPE: {
         	DOESNOTEXIST: 1,
         	BADNAME: 2,
@@ -71,6 +73,7 @@ Types = {
         SKELETON2: 12,
         BOSS: 13,
         DEATHKNIGHT: 14,
+        RAT2: 15,
 
         // Armors
         FIREFOX: 20,
@@ -80,7 +83,7 @@ Types = {
         PLATEARMOR: 24,
         REDARMOR: 25,
         GOLDENARMOR: 26,
-
+        
         // Objects
         FLASK: 35,
         BURGER: 36,
@@ -89,23 +92,40 @@ Types = {
         CAKE: 39,
 
         // NPCs
-        GUARD: 40,
-        KING: 41,
-        OCTOCAT: 42,
-        VILLAGEGIRL: 43,
-        VILLAGER: 44,
-        PRIEST: 45,
-        SCIENTIST: 46,
-        AGENT: 47,
-        RICK: 48,
-        NYAN: 49,
-        SORCERER: 50,
-        BEACHNPC: 51,
-        FORESTNPC: 52,
-        DESERTNPC: 53,
-        LAVANPC: 54,
-        CODER: 55,
-
+        QUESTER01: 41,
+        QUESTER02: 42,
+        QUESTER03: 43,
+        QUESTER04: 44,
+        QUESTER05: 45,
+        GUARD: 46,
+        KING: 47,
+        OCTOCAT: 48,
+        VILLAGER: 49,
+        AGENT: 50,
+        RICK: 51,
+        NYAN: 52,
+        BEACHNPC: 53,
+        FORESTNPC: 54,
+        MALADE01: 55,
+        CODER: 56,
+        TRAP1: 57,
+                
+        VILLAGER01: 170,
+        VILLAGER02: 171,
+        VILLAGER03: 172,
+        VILLAGER04: 173,
+        VILLAGER05: 174,
+        VILLAGER06: 175,
+        VILLAGER07: 176,
+        VILLAGER08: 177,
+        VILLAGER09: 178,
+        VILLAGER10: 179,
+        
+        //Lore
+        LORE01: 301,
+        LORE02: 302,
+        
+        
         // Weapons
         SWORD1: 60,
         SWORD2: 61,
@@ -113,7 +133,29 @@ Types = {
         GOLDENSWORD: 63,
         MORNINGSTAR: 64,
         AXE: 65,
-        BLUESWORD: 66
+        BLUESWORD: 66,
+        
+        // Gites
+        GITE01: 70,
+        GITE02: 71,
+        GITE03: 72,
+        GITE04: 73,
+        GITE05: 74,
+        GITE06: 75,
+        GITE07: 76,
+        GITE08: 77,
+        GITE09: 78,
+        GITE10: 79,
+
+        
+        //Player Faces
+        PFACE_BOY1 : 501,
+        PFACE_BOY2 : 502,
+        PFACE_BOY3 : 503,
+        PFACE_GIRL1 : 601,
+        PFACE_GIRL2 : 602,
+        PFACE_GIRL3 : 603
+        
     },
 
     Orientations: {
@@ -148,19 +190,20 @@ Types = {
 var kinds = {
     warrior: [Types.Entities.WARRIOR, "player"],
 
-    rat: [Types.Entities.RAT, "mob", 5, 2],
-    skeleton: [Types.Entities.SKELETON , "mob", 15, 8],
-    goblin: [Types.Entities.GOBLIN, "mob", 8, 5],
-    ogre: [Types.Entities.OGRE, "mob", 27, 12],
-    spectre: [Types.Entities.SPECTRE, "mob", 53, 21],
-    deathknight: [Types.Entities.DEATHKNIGHT, "mob", 70, 24],
-    crab: [Types.Entities.CRAB, "mob", 1, 1],
-    snake: [Types.Entities.SNAKE, "mob", 25, 10],
-    bat: [Types.Entities.BAT, "mob", 6, 3,],
-    wizard: [Types.Entities.WIZARD, "mob", 7, 1],
-    eye: [Types.Entities.EYE, "mob",45, 18],
-    skeleton2: [Types.Entities.SKELETON2, "mob", 38, 15],
-    boss: [Types.Entities.BOSS, "mob", 140,  48],
+    rat: [Types.Entities.RAT, "mob","Moustique", 0, 1],
+    rat2: [Types.Entities.RAT2, "mob","Moustique", 0, 1],
+    skeleton: [Types.Entities.SKELETON , "mob","Monstre", 15, 8],
+    goblin: [Types.Entities.GOBLIN, "mob","Monstre", 8, 5],
+    ogre: [Types.Entities.OGRE, "mob","Monstre", 27, 12],
+    spectre: [Types.Entities.SPECTRE, "mob","Monstre", 53, 21],
+    deathknight: [Types.Entities.DEATHKNIGHT, "mob","Monstre", 70, 24],
+    crab: [Types.Entities.CRAB, "mob","Monstre", 1, 1],
+    snake: [Types.Entities.SNAKE, "mob","Monstre", 25, 10],
+    bat: [Types.Entities.BAT, "mob","Monstre", 6, 3,],
+    wizard: [Types.Entities.WIZARD, "mob","Monstre", 7, 1],
+    eye: [Types.Entities.EYE, "mob","Monstre",45, 18],
+    skeleton2: [Types.Entities.SKELETON2, "mob","Monstre", 38, 15],
+    boss: [Types.Entities.BOSS, "mob","Carnaval", 140,  48],
 
     sword1: [Types.Entities.SWORD1, "weapon"],
     sword2: [Types.Entities.SWORD2, "weapon"],
@@ -177,6 +220,13 @@ var kinds = {
     platearmor: [Types.Entities.PLATEARMOR, "armor"],
     redarmor: [Types.Entities.REDARMOR, "armor"],
     goldenarmor: [Types.Entities.GOLDENARMOR, "armor"],
+    
+    pface_boy1: [Types.Entities.PFACE_BOY1, "pface"],
+    pface_boy2: [Types.Entities.PFACE_BOY2, "pface"],
+    pface_boy3: [Types.Entities.PFACE_BOY3, "pface"],
+    pface_girl1: [Types.Entities.PFACE_GIRL1, "pface"],
+    pface_girl2: [Types.Entities.PFACE_GIRL2, "pface"],
+    pface_girl3: [Types.Entities.PFACE_GIRL3, "pface"],
 
     flask: [Types.Entities.FLASK, "object"],
     cake: [Types.Entities.CAKE, "object"],
@@ -184,32 +234,61 @@ var kinds = {
     chest: [Types.Entities.CHEST, "object"],
     firepotion: [Types.Entities.FIREPOTION, "object"],
 
-    guard: [Types.Entities.GUARD, "npc"],
-    villagegirl: [Types.Entities.VILLAGEGIRL, "npc"],
-    villager: [Types.Entities.VILLAGER, "npc"],
+    guard: [Types.Entities.GUARD, "npc", "Gérard le garde"],
+    quester02: [Types.Entities.QUESTER02, "npc","Dr. Ker"],
+    villager: [Types.Entities.VILLAGER, "npc", "Jeune homme"],
     coder: [Types.Entities.CODER, "npc"],
-    scientist: [Types.Entities.SCIENTIST, "npc"],
-    priest: [Types.Entities.PRIEST, "npc"],
+    quester04: [Types.Entities.QUESTER04, "npc", "Chercheur Makebaya"],
+    quester03: [Types.Entities.QUESTER03, "npc", "Entomologiste Marleen"],
     king: [Types.Entities.KING, "npc"],
-    rick: [Types.Entities.RICK, "npc"],
+    rick: [Types.Entities.RICK, "npc","Citronelle"],
     nyan: [Types.Entities.NYAN, "npc"],
-    sorcerer: [Types.Entities.SORCERER, "npc"],
+    quester05: [Types.Entities.QUESTER05, "npc","Man Loubliée"],
     agent: [Types.Entities.AGENT, "npc"],
     octocat: [Types.Entities.OCTOCAT, "npc"],
     beachnpc: [Types.Entities.BEACHNPC, "npc"],
     forestnpc: [Types.Entities.FORESTNPC, "npc"],
-    desertnpc: [Types.Entities.DESERTNPC, "npc"],
-    lavanpc: [Types.Entities.LAVANPC, "npc"],
+    quester01: [Types.Entities.QUESTER01, "npc", "Capitaine Briska"],
+    malade01: [Types.Entities.MALADE01, "npc", "Malade n°701"],
+    trap1: [Types.Entities.TRAP1, "npc", "Piège à moustique"],
+    villager01: [Types.Entities.VILLAGER01, "npc","Homme mûr"],
+    villager02: [Types.Entities.VILLAGER02, "npc","Jeune homme"],
+    villager03: [Types.Entities.VILLAGER03, "npc","Jeune homme"],
+    villager04: [Types.Entities.VILLAGER04, "npc","Vieil homme"],
+    villager05: [Types.Entities.VILLAGER05, "npc","Vieil homme"],
+    villager06: [Types.Entities.VILLAGER06, "npc","Jeune femme"],
+    villager07: [Types.Entities.VILLAGER07, "npc","Adolescente"],
+    villager08: [Types.Entities.VILLAGER08, "npc","Jeune femme"],
+    villager09: [Types.Entities.VILLAGER09, "npc","Femme âgée"],
+    villager10: [Types.Entities.VILLAGER10, "npc","Femme âgée"],
+    gite01: [Types.Entities.GITE01, "npc","Dessous de pot"],
+    gite02: [Types.Entities.GITE02, "npc","Dessous de pot"],
+    gite03: [Types.Entities.GITE03, "npc","Déchet"],
+    gite04: [Types.Entities.GITE04, "npc","Réserve d'eau"],
+    gite05: [Types.Entities.GITE05, "npc","Egouttoir"],
+    gite06: [Types.Entities.GITE06, "npc","Pot de brosse à dent"],
+    gite07: [Types.Entities.GITE07, "npc","Vase"],
+    gite08: [Types.Entities.GITE08, "npc","Dessous de pot"],
+    gite09: [Types.Entities.GITE09, "npc","Gouttière"],
+    gite10: [Types.Entities.GITE10, "npc","Tonneau"],
+    lore01: [Types.Entities.LORE01, "npc", "Source"],
+    lore02: [Types.Entities.LORE02, "npc", "Panneau"],
+    
 
     getType: function(kind) {
         return kinds[Types.getKindAsString(kind)][1];
     },
+    getNpcHudName: function(kind){
+        return kinds[Types.getKindAsString(kind)][2];   //SRR
+    },
     getMobExp: function(kind){
-        return kinds[Types.getKindAsString(kind)][2];
+        return kinds[Types.getKindAsString(kind)][3];
     },
     getMobLevel: function(kind){
-        return kinds[Types.getKindAsString(kind)][3];
+        return kinds[Types.getKindAsString(kind)][4];
     }
+
+    
 
 };
 
@@ -239,6 +318,7 @@ Types.expForLevel = [
     915, 1296, 1785, 2401, 3164,
     4096, 5220, 6561, 8145, 10000, // 20
 
+    /*
     12155, 14641, 17490, 20736, 24414,
     28561, 33215, 38416, 44205, 50625, // 30
 
@@ -278,17 +358,17 @@ Types.expForLevel = [
     68574961, 71639296, 74805201, 78074896, 81450625,
     84934656, 88529281, 92236816, 96059601, 100000000, // 150
 
-    108243216,
+    108243216, */
 ];
 
 Types.getLevel = function(exp){
     var i=1;
-    for(i=1; i<135; i++){
+    for(i=1; i<20; i++){
         if(exp < Types.expForLevel[i]){
             return i;
         }
     }
-    return 135;
+    return 20;
 };
 Types.getWeaponRank = function(weaponKind) {
     return _.indexOf(Types.rankedWeapons, weaponKind);
@@ -302,6 +382,9 @@ Types.getMobExp = function(mobKind){
 };
 Types.getMobLevel = function(mobKind){
     return kinds.getMobLevel(mobKind);
+};
+Types.getNpcHudName = function(mobKind){    //SRR
+    return kinds.getNpcHudName(mobKind);
 };
 
 Types.isPlayer = function(kind) {
@@ -330,6 +413,10 @@ Types.isWeapon = function(kind) {
 
 Types.isObject = function(kind) {
     return kinds.getType(kind) === "object";
+};
+
+Types.isPface = function(kind) {            //SRR
+    return kinds.getType(kind) === "pface";
 };
 
 Types.isChest = function(kind) {
@@ -399,6 +486,14 @@ Types.forEachArmorKind = function(callback) {
 Types.forEachWeaponKind = function(callback) {
     Types.forEachKind(function(kind, kindName) {
         if(Types.isWeapon(kind)) {
+            callback(kind, kindName);
+        }
+    });
+};
+
+Types.forEachPfaceKind = function(callback) {  //SRR
+    Types.forEachKind(function(kind, kindName) {
+        if(Types.isPface(kind)) {
             callback(kind, kindName);
         }
     });
