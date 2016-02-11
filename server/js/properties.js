@@ -8,7 +8,18 @@ var Properties = {
             burger: 10,
             firepotion: 5
         },
-        hp: 25,
+        hp: 1,
+        armor: 1,
+        weapon: 1
+    },
+    
+    rat2: {
+        drops: {
+            flask: 40,
+            burger: 10,
+            firepotion: 5
+        },
+        hp: 1,
         armor: 1,
         weapon: 1
     },
@@ -79,7 +90,7 @@ var Properties = {
             leatherarmor: 10,
             firepotion: 5
         },
-        hp: 60,
+        hp: 30,
         armor: 2,
         weapon: 1
     },
@@ -144,7 +155,7 @@ var Properties = {
 
     boss: {
         drops: {
-            goldensword: 100
+            goldenarmor: 100
         },
         hp: 700,
         armor: 6,

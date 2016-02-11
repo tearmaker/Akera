@@ -55,17 +55,23 @@ module.exports = DatabaseHandler = cls.Class.extend({
                         .hget(userKey, "achievement8:found") // 33
                         .hget(userKey, "achievement8:progress") // 34
                         .hget("cb:" + player.connection._connection.remoteAddress, "etime") // 35
+                        .hget(userKey, "gender") // 36
+                        .hget(userKey, "achievements") // 37
+                            .hget(userKey, "pface") // 38
                         .exec(function(err, replies){
                             var pw = replies[0];
                             var armor = replies[1];
                             var weapon = replies[2];
+                            var gender = replies[36];
+                            var achievements = replies[37];
+                            var pface = replies[38];
                             var exp = Utils.NaN2Zero(replies[3]);
                             var bannedTime = Utils.NaN2Zero(replies[4]);
                             var banUseTime = Utils.NaN2Zero(replies[5]);
                             var lastLoginTime = Utils.NaN2Zero(replies[6]);
                             var avatar = replies[7];
                             var pubTopName = replies[8];
-                            var nextNewArmor = replies[9];
+                            var nextNewArmor = replies[9];  
                             var inventory = [replies[10], replies[12]];
                             var inventoryNumber = [
                               Utils.NaN2Zero(replies[11]),
@@ -165,14 +171,19 @@ module.exports = DatabaseHandler = cls.Class.extend({
                                 log.info("Ban Use Time: " + (new Date(banUseTime)).toString());
                                 log.info("Last Login Time: " + lastLoginTimeDate.toString());
                                 log.info("Chatting Ban End Time: " + (new Date(chatBanEndTime)).toString());
-
+                                
+                                //log.info("=== avatar vaut : " + avatar); //SRR
+                                
+                                
                                 player.sendWelcome(armor, weapon,
-                                    avatar, weaponAvatar, exp, admin,
+                                    avatar, weaponAvatar, exp, admin, 
                                     bannedTime, banUseTime,
                                     inventory, inventoryNumber,
                                     achievementFound, achievementProgress,
                                     x, y,
-                                    chatBanEndTime);
+                                    chatBanEndTime, gender, achievements, pface); 
+                                
+                                
                             });
                     });
                     return;
@@ -197,25 +208,33 @@ module.exports = DatabaseHandler = cls.Class.extend({
                 player.connection.close("Username not available: " + player.name);
                 return;
             } else {
-                // Add the player
+                //log.info("genre recu par redis " + player.gender);
+                // Add the player // A la creation
+                var startavatar;
+                startavatar = "clotharmor"+player.gender;
+
                 client.multi()
                     .sadd("usr", player.name)
                     .hset(userKey, "pw", player.pw)
                     .hset(userKey, "email", player.email)
+                    .hset(userKey, "gender", player.gender) //SRR
                     .hset(userKey, "armor", "clotharmor")
-                    .hset(userKey, "avatar", "clotharmor")
+                    .hset(userKey, "avatar", startavatar) //SRR
                     .hset(userKey, "weapon", "sword1")
                     .hset(userKey, "exp", 0)
+                    .hset(userKey, "achievements", "0") //SRR
+                .hset(userKey, "pface", player.pface) //SRR
                     .hset("b:" + player.connection._connection.remoteAddress, "loginTime", curTime)
                     .exec(function(err, replies){
                         log.info("New User: " + player.name);
+                        log.info("===== pface: " + player.pface); // achi undefined, à la création
                         player.sendWelcome(
-                            "clotharmor", "sword1", "clotharmor", "sword1", 0,
+                            "clotharmor", "sword1", startavatar, "sword1", 0,
                              null, 0, 0,
                              [null, null], [0, 0],
                              [false, false, false, false, false, false],
                              [0, 0, 0, 0, 0, 0],
-                             player.x, player.y, 0);
+                             player.x, player.y, 0, player.gender, '0', player.pface);
                     });
             }
         });
@@ -304,9 +323,21 @@ module.exports = DatabaseHandler = cls.Class.extend({
         log.info("Set Armor: " + name + " " + armor);
         client.hset("u:" + name, "armor", armor);
     },
-    equipAvatar: function(name, armor){
-        log.info("Set Avatar: " + name + " " + armor);
-        client.hset("u:" + name, "avatar", armor);
+    /*incGlobalQuest: function(){
+        log.info("GLOBAL QUESTED");
+        
+        //client.set('GlobalQuest', 10, function() {
+            client.incr('GlobalQuest', function(err, reply) {
+                log.info("GQ reply : " + reply); // 111
+            });
+        //});
+    }, */
+    equipAvatar: function(name, avatar, gender){
+        var avatargen = avatar; //SRR passe
+        if(gender){
+            avatargen = avatar + gender; //SRR passe
+        }
+        client.hset("u:" + name, "avatar", avatargen);
     },
     equipWeapon: function(name, weapon){
         log.info("Set Weapon: " + name + " " + weapon);
@@ -316,6 +347,15 @@ module.exports = DatabaseHandler = cls.Class.extend({
         log.info("Set Exp: " + name + " " + exp);
         client.hset("u:" + name, "exp", exp);
     },
+    setAchievements: function(name, achiev){
+        //log.info("Set Achiev: " + name + " " + achiev);
+
+        client.hget("u:" + name, "achievements", function(err, reply) {
+            client.hset("u:" + name, "achievements", reply + ","+ achiev); //111 SRR
+        });
+
+    },
+    
     setInventory: function(name, itemKind, inventoryNumber, itemNumber){
         if(itemKind){
             client.hset("u:" + name, "inventory" + inventoryNumber, Types.getKindAsString(itemKind));

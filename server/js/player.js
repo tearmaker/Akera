@@ -36,14 +36,14 @@ module.exports = Player = Character.extend({
 
         this.inventory = [];
         this.inventoryCount = [];
-        this.achievement = [];
+        this.achievements = '0';
 
         this.chatBanEndTime = 0;
 
         this.connection.listen(function(message) {
             var action = parseInt(message[0]);
 
-            log.debug("Received: "+message);
+            //log.debug("Received damage: "+message);
             if(!check(message)) {
                 self.connection.close("Invalid "+Types.getMessageTypeAsString(action)+" message format: "+message);
                 return;
@@ -63,6 +63,10 @@ module.exports = Player = Character.extend({
             if(action === Types.Messages.CREATE || action === Types.Messages.LOGIN) {
                 var name = Utils.sanitize(message[1]);
                 var pw = Utils.sanitize(message[2]);
+                var gender = message[4]; //SRR
+                var pface = message[5]; //SRR
+                log.info("tout le message1 : " + message);  //SRR
+                
 
                 // Always ensure that the name is not longer than a maximum length.
                 // (also enforced by the maxlength attribute of the name input element).
@@ -75,13 +79,20 @@ module.exports = Player = Character.extend({
                     return;
                 }
                 self.pw = pw.substr(0, 15);
-
+		
+		
+		// A la creation du perso
                 if(action === Types.Messages.CREATE) {
                     bcrypt.genSalt(10, function(err, salt) {
                         bcrypt.hash(self.pw, salt, function(err, hash) {
                             log.info("CREATE: " + self.name);
                             self.email = Utils.sanitize(message[3]);
                             self.pw = hash;
+                           
+					           self.gender = message[4]; //SRR
+                                self.pface = message[5];
+                                log.info("tout le message2 : " + message);  //SRR
+                           
                             databaseHandler.createPlayer(self);
                         })
                     });
@@ -137,7 +148,7 @@ module.exports = Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.MOVE) {
-                log.info("MOVE: " + self.name + "(" + message[1] + ", " + message[2] + ")");
+               // log.info("MOVE: " + self.name + "(" + message[1] + ", " + message[2] + ")");
                 if(self.move_callback) {
                     var x = message[1],
                         y = message[2];
@@ -172,7 +183,7 @@ module.exports = Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.ATTACK) {
-                log.info("ATTACK: " + self.name + " " + message[1]);
+                //log.info("===ATTACK: " + self.name + " " + message[1]);
                 var mob = self.server.getEntityById(message[1]);
 
                 if(mob) {
@@ -181,21 +192,24 @@ module.exports = Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.HIT) {
-                log.info("HIT: " + self.name + " " + message[1]);
+                //log.info("HIT: " + self.name + " " + message[1]);
                 var mob = self.server.getEntityById(message[1]);
                 if(mob) {
-                    var dmg = Formulas.dmg(self.weaponLevel, mob.armorLevel);
-
-                    if(dmg > 0) {
+                    var dmg = Formulas.dmg(self.weaponLevel, mob.armorLevel, self.level, self.server.globalQuest);
+                    
+                    //log.info("===DMG dealt : " + dmg + " to : " + mob.id);
+                    
+                    if(dmg >= 0) { //SRR amelio
                       if(mob.type !== "player"){
                         mob.receiveDamage(dmg, self.id);
                         self.server.handleMobHate(mob.id, self.id, dmg);
+                        //log.info("===ATTACK: " + self.name + " " + message[1]);
                         self.server.handleHurtEntity(mob, self, dmg);
                       }
-                    }
-                     else {
+                    } else {
+                    log.info("===DMG NEGATIF: " + dmg);
                       mob.hitPoints -= dmg;
-                      mob.server.handleHurtEntity(mob);
+                      mob.server.handleHurtEntity(mob); 
                         if(mob.hitPoints <= 0){
                           mob.isDead = true;
                           self.server.pushBroadcast(new Messages.Chat(self, self.name + "M-M-M-MONSTER KILLED" + mob.name));
@@ -204,12 +218,24 @@ module.exports = Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.HURT) {
-                log.info("HURT: " + self.name + " " + message[1]);
+                //log.info("HURT: " + self.name + " " + message[1]);
                 var mob = self.server.getEntityById(message[1]);
+                
                 if(mob && self.hitPoints > 0) {
-                    self.hitPoints -= Formulas.dmg(mob.weaponLevel, self.armorLevel);
+                    var gq_used = 0;
+                    var gq = self.server.globalQuest;
+                    if (gq < 0){
+                        gq_used = - gq;
+                    }
+                    
+                    self.hitPoints -= Formulas.dmg(mob.weaponLevel, self.armorLevel, 0, gq_used);
                     self.server.handleHurtEntity(self);
-
+                    
+                    log.info("HURT: " + mob.kind); //111
+                    if(mob.kind == 2){ //touché par un moustique
+                        self.server.incrementGlobalQuest(-1);
+                    }
+                    
                     if(self.hitPoints <= 0) {
                         self.isDead = true;
                         if(self.firepotionTimeout) {
@@ -364,11 +390,18 @@ module.exports = Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.ACHIEVEMENT) {
-                log.info("ACHIEVEMENT: " + self.name + " " + message[1] + " " + message[2]);
-                if(message[2] === "found") {
+               // log.info("ACHIEVEMENT: " + self.name + " " + message);
+                databaseHandler.setAchievements(self.name, message[1]);
+                
+                /*if(message[2] === "found") {
                     self.achievement[message[1]].found = true;
                     databaseHandler.foundAchievement(self.name, message[1]);
-                }
+                }*/
+            }
+            else if(action === Types.Messages.GLOBALQUEST) {
+                var score = message[1];
+                self.server.incrementGlobalQuest(score);
+                
             }
             else if(action === Types.Messages.GUILD) {
                 if(message[1] === Types.Messages.GUILDACTION.CREATE) {
@@ -441,8 +474,7 @@ module.exports = Player = Character.extend({
 
     getState: function() {
         var basestate = this._getBaseState(),
-            state = [this.name, this.orientation, this.armor, this.weapon, this.level];
-
+            state = [this.name, this.orientation, this.armor, this.weapon, this.level,this.gender, this.pface]; //SRR
         if(this.target) {
             state.push(this.target);
         }
@@ -541,6 +573,28 @@ module.exports = Player = Character.extend({
             this.avatar = Types.Entities.CLOTHARMOR;
         }
      },
+    
+    setGender: function(gender) {
+        if(gender) {
+            this.gender = gender;
+        } else {
+            this.gender = "";
+        }
+     },
+    
+    setPface: function(pface) {
+        if(pface) {
+            this.pface = "pface_" + pface;
+        } 
+     },
+    
+    setAchievements: function(achiev) {
+        if(achiev) {
+            this.achievements = achiev;
+        } else {
+            this.achievements = '0';
+        }
+     },
 
     equipWeapon: function(kind) {
         this.weapon = kind;
@@ -553,10 +607,10 @@ module.exports = Player = Character.extend({
 
             if(Types.isArmor(itemKind)) {
                 if(isAvatar) {
-                    databaseHandler.equipAvatar(this.name, Types.getKindAsString(itemKind));
+                    databaseHandler.equipAvatar(this.name, Types.getKindAsString(itemKind), this.gender); //SRR
                     this.equipAvatar(itemKind);
                 } else {
-                    databaseHandler.equipAvatar(this.name, Types.getKindAsString(itemKind));
+                    databaseHandler.equipAvatar(this.name, Types.getKindAsString(itemKind), this.gender); //SRR
                     this.equipAvatar(itemKind);
 
                     databaseHandler.equipArmor(this.name, Types.getKindAsString(itemKind));
@@ -572,7 +626,7 @@ module.exports = Player = Character.extend({
     },
 
     updateHitPoints: function() {
-        this.resetHitPoints(Formulas.hp(this.armorLevel));
+        this.resetHitPoints(Formulas.hp(this.armorLevel, this.level));
     },
 
     updatePosition: function() {
@@ -661,14 +715,17 @@ module.exports = Player = Character.extend({
                           bannedTime, banUseTime,
                           inventory, inventoryNumber, achievementFound, achievementProgress,
                           x, y,
-                          chatBanEndTime) {
+                          chatBanEndTime, gender, achievements, pface) {
         var self = this;
         self.kind = Types.Entities.WARRIOR;
         self.admin = admin;
         self.equipArmor(Types.getKindFromString(armor));
         self.equipAvatar(Types.getKindFromString(avatar));
         self.equipWeapon(Types.getKindFromString(weapon));
-        self.inventory[0] = Types.getKindFromString(inventory[0]);
+        self.setGender(gender); // SRR
+        self.setAchievements(achievements); // SRR
+        self.setPface(pface); // SRR
+       /* self.inventory[0] = Types.getKindFromString(inventory[0]);
         self.inventory[1] = Types.getKindFromString(inventory[1]);
         self.inventoryCount[0] = inventoryNumber[0];
         self.inventoryCount[1] = inventoryNumber[1];
@@ -679,7 +736,7 @@ module.exports = Player = Character.extend({
         self.achievement[5] = {found: achievementFound[4], progress: achievementProgress[4]};
         self.achievement[6] = {found: achievementFound[5], progress: achievementProgress[5]};
         self.achievement[7] = {found: achievementFound[6], progress: achievementProgress[6]};
-        self.achievement[8] = {found: achievementFound[7], progress: achievementProgress[7]};
+        self.achievement[8] = {found: achievementFound[7], progress: achievementProgress[7]};*/
         self.bannedTime = bannedTime;
         self.banUseTime = banUseTime;
         self.experience = exp;
@@ -695,11 +752,13 @@ module.exports = Player = Character.extend({
 
         self.server.addPlayer(self);
         self.server.enter_callback(self);
-
+        
+        
+        //recu par onWelcome game.js
         self.send([
             Types.Messages.WELCOME, self.id, self.name, self.x, self.y,
             self.hitPoints, armor, weapon, avatar, weaponAvatar,
-            self.experience, self.admin,
+            self.experience, self.gender, self.achievements, self.pface, self.admin,  //SRR 
             inventory[0], inventoryNumber[0], inventory[1], inventoryNumber[1],
             achievementFound[0], achievementProgress[0], achievementFound[1],
             achievementProgress[1], achievementFound[2], achievementProgress[2],

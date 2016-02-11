@@ -7,6 +7,7 @@ var Entity = cls.Class.extend({
         this.id = parseInt(id, 10);
         this.type = type;
         this.kind = kind;
+        //log.info("======= kind de "+ type +" "+this.id +" vaut : " + kind); //SRR
         this.x = x;
         this.y = y;
     },

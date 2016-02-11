@@ -93,11 +93,14 @@ Messages.EquipItem = Message.extend({
     init: function (player, itemKind) {
         this.playerId = player.id;
         this.itemKind = itemKind;
+        this.gender = player.gender;
     },
     serialize: function () {
         return [Types.Messages.EQUIP,
                 this.playerId,
-                this.itemKind];
+                this.itemKind,
+                this.gender
+               ];
     }
 });
 
@@ -166,6 +169,16 @@ Messages.Population = Message.extend({
         return [Types.Messages.POPULATION,
                 this.world,
                 this.total];
+    }
+});
+
+Messages.GlobalQuest = Message.extend({ //SRR
+    init: function (gq) {
+        this.globalQuest = gq;
+    },
+    serialize: function () {
+        return [Types.Messages.GLOBALQUEST,
+                this.globalQuest];
     }
 });
 

@@ -5,7 +5,7 @@ var Types = require('../../shared/js/gametypes');
     FormatChecker = Class.extend({
         init: function () {
             this.formats = [];
-            this.formats[Types.Messages.CREATE] = ['s', 's', 's'],
+            this.formats[Types.Messages.CREATE] = ['s', 's', 's', 's','s'], //SRR
             this.formats[Types.Messages.LOGIN] = ['s', 's'],
             this.formats[Types.Messages.MOVE] = ['n', 'n'],
             this.formats[Types.Messages.LOOTMOVE] = ['n', 'n', 'n'],
@@ -19,7 +19,8 @@ var Types = require('../../shared/js/gametypes');
             this.formats[Types.Messages.ZONE] = [],
             this.formats[Types.Messages.OPEN] = ['n'],
             this.formats[Types.Messages.CHECK] = ['n'],
-            this.formats[Types.Messages.ACHIEVEMENT] = ['n', 's']
+            this.formats[Types.Messages.ACHIEVEMENT] = ['n'] //SRR
+            this.formats[Types.Messages.GLOBALQUEST] = ['n'] //SRR
         },
 
         check: function (msg) {
@@ -30,6 +31,9 @@ var Types = require('../../shared/js/gametypes');
             message.shift();
 
             if (format) {
+                
+                //log.info("=== format : " + format + " message : " + message);  //SRR
+                
                 if (message.length !== format.length) {
                     return false;
                 }

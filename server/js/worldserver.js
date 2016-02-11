@@ -49,6 +49,8 @@ module.exports = World = cls.Class.extend({
 
         this.itemCount = 0;
         this.playerCount = 0;
+        
+        this.globalQuest = 0;
 
         this.zoneGroupsReady = false;
 
@@ -67,6 +69,7 @@ module.exports = World = cls.Class.extend({
 
             if(!player.hasEnteredGame) {
                 self.incrementPlayerCount();
+                self.updateGlobalQuestBar();
             }
 
             // Number of players in this world
@@ -353,7 +356,7 @@ module.exports = World = cls.Class.extend({
 
         for(var id in this.outgoingQueues) {
             if(this.outgoingQueues[id].length > 0) {
-                connection = this.server.getConnection(id);
+                connection = this.server.getConnection(id); //bugggy (changement d'images)
                 connection.send(this.outgoingQueues[id]);
                 this.outgoingQueues[id] = [];
             }
@@ -640,10 +643,12 @@ module.exports = World = cls.Class.extend({
     },
 
     handleHurtEntity: function(entity, attacker, damage) {
-        var self = this;
-
+        
+        var self = this; 
+         //log.debug("==== qui prend coup : " + entity.type);
         if(entity.type === 'player') {
             // A player is only aware of his own hitpoints
+            //log.debug("==== qui donne coup : " + attacker); //is undefined
             this.pushToPlayer(entity, entity.health());
         }
 
@@ -658,20 +663,27 @@ module.exports = World = cls.Class.extend({
                 var mob = entity,
                     item = this.getDroppedItem(mob);
                 var mainTanker = this.getEntityById(mob.getMainTankerId());
-
+                
                 if(mainTanker && mainTanker instanceof Player){
                   mainTanker.incExp(Types.getMobExp(mob.kind));
                   this.pushToPlayer(mainTanker, new Messages.Kill(mob, mainTanker.level, mainTanker.experience));
-                } else{
+                } else {
                   attacker.incExp(Types.getMobExp(mob.kind));
                   this.pushToPlayer(attacker, new Messages.Kill(mob, attacker.level, attacker.experience));
                 }
-
+                
                this.pushToAdjacentGroups(mob.group, mob.despawn()); // Despawn must be enqueued before the item drop
                 if(item) {
                     this.pushToAdjacentGroups(mob.group, mob.drop(item));
                     this.handleItemDespawn(item);
                 }
+                
+                if(mob.kind == 2){      //SRR 111 2 = rat
+                    //log.info("=== ca a marché =" + mob.kind);
+                    this.incrementGlobalQuest(3);
+                    log.info("globalquest count : " + this.globalQuest);
+                }
+                
             }
 
             if(entity.type === "player") {
@@ -682,6 +694,8 @@ module.exports = World = cls.Class.extend({
             this.removeEntity(entity);
         }
     },
+    
+    
 
     despawn: function(entity) {
         this.pushToAdjacentGroups(entity.group, entity.despawn());
@@ -892,7 +906,7 @@ module.exports = World = cls.Class.extend({
 
                 if(_.size(oldGroups) > 0) {
                     entity.recentlyLeftGroups = _.difference(oldGroups, newGroups);
-                    log.debug("group diff: " + entity.recentlyLeftGroups);
+                    //log.debug("group diff: " + entity.recentlyLeftGroups);
                 }
             }
         }
@@ -1000,5 +1014,31 @@ module.exports = World = cls.Class.extend({
 
     updatePopulation: function(totalPlayers) {
         this.pushBroadcast(new Messages.Population(this.playerCount, totalPlayers ? totalPlayers : this.playerCount));
+    },
+    
+    setGlobalQuest: function(count) { //SRR
+        this.globalQuest = count;
+    },
+
+    incrementGlobalQuest: function(score) {
+        this.setGlobalQuest(this.globalQuest + score);
+        this.updateGlobalQuestBar();
+        if(this.globalQuest > 20) {
+            this.popGlobalEvent();
+            //Broadcast notification
+            //this.setGlobalQuest(0);
+        }
+    },
+    
+    updateGlobalQuestBar: function() { 
+        this.pushBroadcast(new Messages.GlobalQuest(this.globalQuest));
+    },
+    
+    popGlobalEvent: function() { 
+        var bossEvent = new Mob(66666, 14, 13, 165);
+        var bossEvent2 = new Mob(66667, 13, 14, 165);
+        this.addMob(bossEvent);
+        this.addMob(bossEvent2);
     }
+    
 });

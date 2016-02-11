@@ -41,11 +41,12 @@ function main(config) {
         }
     }, 1000);
 
-    log.info("Starting BrowserQuest game server...");
+    log.info("Starting Akera game server...");
     var selector = DatabaseSelector(config);
     databaseHandler = new selector(config);
-
+    
     server.onConnect(function(connection) {
+        
         var world; // the one in which the player will be spawned
         var connect = function() {
                 if(world) {
@@ -78,6 +79,7 @@ function main(config) {
         metrics.updatePlayerCounters(worlds, function(totalPlayers) {
             _.each(worlds, function(world) {
                 world.updatePopulation(totalPlayers);
+                
             });
         });
         metrics.updateWorldDistribution(getWorldDistribution(worlds));
