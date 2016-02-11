@@ -1,0 +1,334 @@
+/* Creation global*/
+
+r {
+    display: inline-block;
+}
+
+.centered {
+    position: absolute;
+    left: 50%;
+}
+
+#img_avat {
+    width: 68px;
+    height: 75px;
+    animation: stand .8s steps(2) infinite;
+    background-image: url('../img/3/clotharmor.png'), url('../img/3/pface_boy1.png');
+}
+
+@keyframes rotateBall {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes stand {
+    from {
+        background-position: -13px -774px;
+    }
+    to {
+        background-position: -205px -774px;
+    }
+}
+
+@keyframes stand3 {
+    from {
+        background-position: -31px -1548px;
+    }
+    to {
+        background-position: -415px -1548px;
+    }
+}
+
+@keyframes anim-logo2 {
+    from {
+        background-position: 0px 0px;
+    }
+    to {
+        background-position: 0px -588px;
+    }
+}
+
+@keyframes anim-logo3 {
+    from {
+        background-position: 0px 0px;
+    }
+    to {
+        background-position: 0px -1323px;
+    }
+}
+
+
+/* GRANDS ECRANS */
+
+@media screen and (min-width: 1501px) {
+    #img_avat {
+        width: 126px;
+        height: 150px;
+        animation: stand3 .8s steps(2) infinite;
+        background-size: 960px 2304px;
+    }
+    #createcharacter {
+        position: absolute;
+        top: 10%;
+    }
+    .selec_button {
+        width: 48px;
+        height: 48px;
+        position: relative;
+        margin: 25px;
+        background-image: url('../img/3/spritesheet.png');
+    }
+    .bigbutton {
+        width: 282px;
+        height: 86px;
+        margin-top: 20px;
+        background-image: url('../img/3/spritesheet.png');
+    }
+    .go-play {
+        background-position: -780px 0px;
+    }
+    .go-play:active {
+        background-position: -780px -175px;
+    }
+    #crea_continue {
+        background-position: -780px -435px;
+    }
+    #crea_continue:active {
+        background-position: -780px -523px;
+    }
+    #crea_cancel {
+        background-position: -780px -261px;
+    }
+    #crea_cancel:active {
+        background-position: -780px -348px;
+    }
+    #crea_next {
+        background-position: -816px -609px;
+        bottom: 25px;
+    }
+    #crea_next:active {
+        background-position: -912px -609px;
+    }
+    #crea_prev {
+        background-position: -816px -656px;
+        bottom: 25px;
+    }
+    #crea_prev:active {
+        background-position: -911px -656px;
+        bottom: 25px;
+    } 
+    #crea_female {
+        background-position: -960px -657px;
+    } 
+    #crea_female:active {
+        background-position: -1056px -657px;
+    }
+    #crea_male {
+        background-position: -960px -609px;
+    }
+    #crea_male:active {
+        background-position: -1056px -609px;
+    }
+    .logobody {
+        width: 428px;
+        height: 220px;
+        margin-left: -214px;
+        background-size: 1899px 3497px;
+        background-image: url('../img/3/spritesheet.png');
+    }
+    #logo-bg {
+        background-position: -729px 0px;
+    }
+    #logo-text {
+        background-position: 0px 0px;
+    }
+    #logo-ball {
+        width: 81px;
+        height: 81px;
+        margin-left: -40px;
+        top: 10px;
+        background-image: url('../img/3/myballs.png');
+        animation: rotateBall 2s linear infinite;
+    }
+}
+
+
+/* MOYENS ECRANS */
+
+@media screen and (max-width: 1500px),
+screen and (max-height: 870px) {
+    .selec_button {
+        width: 32px;
+        height: 32px;
+        position: relative;
+        margin: 10px;
+        background-image: url('../img/2/spritesheet.png');
+    }
+    .bigbutton {
+        width: 188px;
+        height: 58px;
+        margin-top: 15px;
+        background-image: url('../img/2/spritesheet.png');
+    }
+    
+    #createcharacter {
+        position: absolute;
+        top: 7%;
+    }
+    .go-play {
+        background-position: -519px 0px;
+    }
+    .go-play:active {
+        background-position: -519px -116px;
+    }
+    #crea_continue {
+        background-position: -520px -290px;
+    }
+    #crea_continue:active {
+        background-position: -520px -348px;
+    }
+    #crea_cancel {
+        background-position: -520px -174px;
+    }
+    #crea_cancel:active {
+        background-position: -520px -232px;
+    }
+    #crea_next {
+        background-position: -544px -406px;
+        bottom: 25px;
+    } 
+    #crea_next:active {
+        background-position: -608px -406px;
+    }
+    #crea_prev {
+        background-position: -544px -438px;
+        bottom: 25px;
+    }
+    #crea_prev:active {
+        background-position: -608px -438px;
+    }
+    #crea_female {
+        background-position: -640px -438px;
+    }
+    #crea_female:active {
+        background-position: -704px -438px;
+    }
+    #crea_male {
+        background-position: -640px -406px;
+    }
+    #crea_male:active {
+        background-position: -704px -406px;
+    }
+    .logobody {
+        width: 190px;
+        height: 98px;
+        margin-left: -95px;
+        background-size: auto;
+        background-image: url('../img/2/spritesheet.png');
+    }
+    #logo-bg {
+        background-position: -324px 0px;
+    }
+    #logo-text {
+        background-position: 0px 0px;
+    }
+    #logo-ball {
+        width: 36px;
+        height: 36px;
+        margin-left: -18px;
+        top: 5px;
+        background-image: url('../img/2/myballs.png');
+        animation: rotateBall 2s linear infinite;
+    }
+}
+
+
+/* PETITS ECRANS */
+
+@media screen and (max-width: 1000px) {
+    .selec_button {
+        width: 16px;
+        height: 16px;
+        position: relative;
+        margin: 10px;
+        background-image: url('../img/1/spritesheet.png');
+    }
+    .bigbutton {
+        width: 94px;
+        height: 29px;
+        background-image: url('../img/1/spritesheet.png');
+    }
+    .go-play {
+        background-position: -260px 0px;
+    }
+    .go-play:active {
+        background-position: -260px -58px;
+    }
+    #crea_continue {
+        background-position: -260px -145px;
+    }
+    #crea_continue:active {
+        background-position: -260px -174px;
+    }
+    #crea_cancel {
+        background-position: -260px -87px;
+    }
+    #crea_cancel:active {
+        background-position: -260px -116px;
+    }
+    #crea_next {
+        background-position: -272px -203px;
+        bottom: 33px;
+        margin: 9px;
+    } 
+    #crea_next:active {
+        background-position: -304px -203px;
+    }
+    #crea_prev {
+        background-position: -272px -219px;
+        bottom: 33px;
+        margin: 9px;
+    }
+    #crea_prev:active {
+        background-position: -304px -219px;
+    }
+    #crea_female {
+        background-position: -320px -219px;
+    }
+    #crea_female:active {
+        background-position: -352px -219px;
+    }
+    #crea_male {
+        background-position: -320px -203px;
+    }
+    #crea_male:active {
+        background-position: -352px -203px;
+    }
+   /* .logobody {
+        width: 95px;
+        height: 49px;
+        margin-left: -47px;
+        background-size: auto;
+        background-image: url('../img/1/spritesheet.png');
+    }
+    #logo-bg {
+        background-position: -162px 0px;
+    }
+    #logo-ball {
+        width: 18px;
+        height: 18px;
+        margin-left: -9px;
+        top: 2px;
+        background-image: url('../img/1/myballs.png');
+        animation: rotateBall 2s linear infinite;
+    } */
+    #logo-text {
+        background-position: 0px 0px;
+        animation: none;
+    }
+
+}
